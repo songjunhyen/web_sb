@@ -2,12 +2,10 @@ package com.example.demo.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.ArticleDao;
 import com.example.demo.vo.Article;
-
 
 //ArticleService 클래스: 
 // 비즈니스 로직을 처리하는 서비스 클래스로, ArticleDao를 사용하여 데이터베이스 접근을 수행합니다. 
@@ -15,26 +13,32 @@ import com.example.demo.vo.Article;
 
 @Service
 public class ArticleService {
-    @Autowired
-    private ArticleDao articleDao;
 
-    public Article writeArticle(String title, String body) {
-        return articleDao.writeArticle(title, body);
-    }
+	private ArticleDao articleDao;
 
-    public List<Article> getArticles() {
-        return articleDao.getArticles();
-    }
+	public ArticleService(ArticleDao articleDao) {
+		this.articleDao = articleDao;
+	}
 
-    public boolean deleteArticle(int id) {
-        return articleDao.deleteArticle(id);
-    }
+	public Article writeArticle(Article article) {
+		this.articleDao.writeArticle(article);
+		return article;
+	}
 
-    public Article getArticleById(int id) {
-        return articleDao.getArticleById(id);
-    }
+	public List<Article> getArticles() {
+		return this.articleDao.getAllArticles();
+	}
 
-    public boolean updateArticle(int id, String title, String body) {
-        return articleDao.updateArticle(id, title, body);
-    }
+	public Article getArticleById(int id) {
+		return this.articleDao.getArticleById(id);
+	}
+
+	public void modifyArticle(Article foundArticle, String title, String body) {
+		this.articleDao.updateArticle(foundArticle, title, body);
+	}
+
+	public void deleteArticle(Article foundArticle) {
+		this.articleDao.deleteArticle(foundArticle);
+	}
+
 }
