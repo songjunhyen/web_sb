@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +25,7 @@ public class UsrUserController {
 
 	@PostMapping("/usr/user/Signup")
 	@ResponseBody
-	public ResultData Signup(@RequestParam String userid, @RequestParam String userpw, @RequestParam String userpw2,
+	public ResultData<?> Signup(@RequestParam String userid, @RequestParam String userpw, @RequestParam String userpw2,
 			@RequestParam String nickname) {
 		// 입력값 검증
 		if (Util.isEmpty(userid)) {
@@ -50,17 +52,29 @@ public class UsrUserController {
 
 	@PostMapping("/usr/user/Login")
 	@ResponseBody
-	public User Login(@RequestParam String userid, @RequestParam String userpw) {
+	public ResultData<User> Login(@RequestParam String userid, @RequestParam String userpw) {
 		User user = userService.Login(userid, userpw);
-		return user;// 서블릿이나 jsp가 받아서 사용
+	    
+	    if (user == null) {
+	        return ResultData.from("F-8", "아이디 또는 비밀번호가 일치하지 않습니다.");
+	    }
+	    
+	    // 로그인 코드 생성
+	    String login_code = UUID.randomUUID().toString();
+	    
+	    // 로그인 세션 관리를 위해 login_code를 userService를 통해 업데이트
+	    userService.updateUserLoginSession(user, login_code);
+	    
+	    // 로그인 성공 메시지와 사용자 정보 반환
+	    return ResultData.from("S-5", "로그인 되었습니다.", user);
 	}
-
+	
 	@GetMapping("/usr/user/Logout")
 	@ResponseBody
-	public ResultData Logout(String userid) {
+	public ResultData<?> Logout(String userid) {
 		User foundUser = userService.getUserById(userid);
 		if (foundUser == null) {
-			return ResultData.from("F-6", "유저가 존재하지 않습니다");
+			return ResultData.from("F-6", "해당되는 유저가 존재하지 않습니다");
 		}
 		userService.Logout(foundUser);
 		return ResultData.from("S-2", "로그아웃 되었습니다.");
@@ -68,10 +82,10 @@ public class UsrUserController {
 
 	@PostMapping("/usr/user/Update")
 	@ResponseBody
-	public ResultData Update(@RequestParam String userid, @RequestParam String userpw, @RequestParam String nickname) {
+	public ResultData<?> Update(@RequestParam String userid, @RequestParam String userpw, @RequestParam String nickname) {
 		User foundUser = userService.getUserById(userid);
 		if (foundUser == null) {
-			return ResultData.from("F-6", "유저가 존재하지 않습니다");
+			return ResultData.from("F-6", "해당되는 유저가 존재하지 않습니다");
 		}
 				foundUser.setUserpw(userpw);
 		foundUser.setNickname(nickname);
@@ -81,7 +95,7 @@ public class UsrUserController {
 
 	@DeleteMapping("/usr/user/delete")
 	@ResponseBody
-	public ResultData Delete(@RequestParam String userid, @RequestParam String userpw) {
+	public ResultData<?> Delete(@RequestParam String userid, @RequestParam String userpw) {
 		User foundUser = userService.getUserById(userid);
 		if (foundUser == null) {
 			return ResultData.from("F-6", "유저가 존재하지 않습니다");		

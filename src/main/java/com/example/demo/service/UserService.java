@@ -21,6 +21,11 @@ public class UserService {
 		return userDao.Login(userid, userpw);
 	}
 
+	public void updateUserLoginSession(User user, String loginCode) {
+        userDao.updateUserLoginSession(user.getUserid(), user.getNickname(), loginCode);
+        userDao.updateLoginCode(user.getUserid(), loginCode);
+    }
+
 	public String Logout(User foundUser) {
 		return userDao.Logout(foundUser);
 	}
@@ -36,5 +41,5 @@ public class UserService {
 	public User getUserById(String userid) {
 		return userDao.getUserById(userid);
 	}
-}
 
+}

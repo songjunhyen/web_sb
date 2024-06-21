@@ -18,6 +18,18 @@ public interface UserDao {
 
     @Select("SELECT * FROM user WHERE userid = #{userid} AND userpw = #{userpw}")
     User Login(String userid, String userpw);
+    
+    @Insert({
+        "INSERT INTO `login_user` (userid, nickname, login_code)",
+        "VALUES (#{userid}, #{nickname}, #{loginCode})",
+        "ON DUPLICATE KEY UPDATE",
+        "    nickname = VALUES(nickname),",
+        "    login_code = VALUES(login_code)"
+    })
+    void updateUserLoginSession(String userid, String nickname, String loginCode);
+
+    @Update("UPDATE `login_user` SET login_code = #{loginCode} WHERE userid = #{userid}")
+    void updateLoginCode(String userid, String loginCode);
 
     @Update("UPDATE user SET login_code = null WHERE userid = #{userid}")
     String Logout(User foundUser);
@@ -27,4 +39,6 @@ public interface UserDao {
 
     @Delete("DELETE FROM user WHERE userid = #{userid}")
     void Delete(User foundUser);
+    
+
 }

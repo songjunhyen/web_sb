@@ -46,4 +46,11 @@ public interface ArticleDao {
 				WHERE id = #{id}
 			""")
 	void deleteArticle(Article article);
+
+	@Select("""
+			SELECT writer
+				FROM article
+				WHERE id = #{id}
+			""")
+	String getWriterById(int id);
 }
