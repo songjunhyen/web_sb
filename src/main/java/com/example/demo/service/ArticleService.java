@@ -19,7 +19,14 @@ public class ArticleService {
 	public ArticleService(ArticleDao articleDao) {
 		this.articleDao = articleDao;
 	}
-
+	
+	public boolean CheckCode(String userid, String loginCode) {
+		if (!loginCode.equals(articleDao.getLogin_codeByUserid(userid))) {
+			return false;
+		}
+		return true;
+	}
+	
 	public Article writeArticle(Article article) {
 		this.articleDao.writeArticle(article);
 		return article;

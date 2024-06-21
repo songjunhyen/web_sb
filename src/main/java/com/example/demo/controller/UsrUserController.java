@@ -13,6 +13,8 @@ import com.example.demo.service.UserService;
 import com.example.demo.vo.ResultData;
 import com.example.demo.vo.User;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import util.Util;
 
 @Controller
@@ -52,23 +54,29 @@ public class UsrUserController {
 
 	@PostMapping("/usr/user/Login")
 	@ResponseBody
-	public ResultData<User> Login(@RequestParam String userid, @RequestParam String userpw) {
+	public ResultData<User> Login(HttpServletRequest request, @RequestParam String userid,
+			@RequestParam String userpw) {
 		User user = userService.Login(userid, userpw);
-	    
-	    if (user == null) {
-	        return ResultData.from("F-8", "아이디 또는 비밀번호가 일치하지 않습니다.");
-	    }
-	    
-	    // 로그인 코드 생성
-	    String login_code = UUID.randomUUID().toString();
-	    
-	    // 로그인 세션 관리를 위해 login_code를 userService를 통해 업데이트
-	    userService.updateUserLoginSession(user, login_code);
-	    
-	    // 로그인 성공 메시지와 사용자 정보 반환
-	    return ResultData.from("S-5", "로그인 되었습니다.", user);
+
+		if (user == null) {
+			return ResultData.from("F-8", "아이디 또는 비밀번호가 일치하지 않습니다.");
+		}
+
+		// 로그인 코드 생성
+		String login_code = UUID.randomUUID().toString();
+
+		// 로그인 세션 관리를 위해 login_code를 userService를 통해 업데이트
+		userService.updateUserLoginSession(user, login_code);
+
+		// 세션에 userid, logincode저장
+		HttpSession session = request.getSession();
+		session.setAttribute("userId", userid);
+		session.setAttribute("loginCode", login_code);
+
+		// 로그인 성공 메시지와 사용자 정보 반환
+		return ResultData.from("S-5", "로그인 되었습니다.", user);
 	}
-	
+
 	@GetMapping("/usr/user/Logout")
 	@ResponseBody
 	public ResultData<?> Logout(String userid) {
@@ -82,12 +90,13 @@ public class UsrUserController {
 
 	@PostMapping("/usr/user/Update")
 	@ResponseBody
-	public ResultData<?> Update(@RequestParam String userid, @RequestParam String userpw, @RequestParam String nickname) {
+	public ResultData<?> Update(@RequestParam String userid, @RequestParam String userpw,
+			@RequestParam String nickname) {
 		User foundUser = userService.getUserById(userid);
 		if (foundUser == null) {
 			return ResultData.from("F-6", "해당되는 유저가 존재하지 않습니다");
 		}
-				foundUser.setUserpw(userpw);
+		foundUser.setUserpw(userpw);
 		foundUser.setNickname(nickname);
 		userService.Update(foundUser);
 		return ResultData.from("S-3", "수정 되었습니다.");
@@ -98,7 +107,7 @@ public class UsrUserController {
 	public ResultData<?> Delete(@RequestParam String userid, @RequestParam String userpw) {
 		User foundUser = userService.getUserById(userid);
 		if (foundUser == null) {
-			return ResultData.from("F-6", "유저가 존재하지 않습니다");		
+			return ResultData.from("F-6", "유저가 존재하지 않습니다");
 		}
 		if (!foundUser.getUserpw().equals(userpw)) {
 			return ResultData.from("F-7", "로그인 비밀번호가 일치하지 않습니다.");
