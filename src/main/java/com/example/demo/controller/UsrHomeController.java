@@ -55,6 +55,10 @@ public class UsrHomeController {
                 "글 번호: <input type=\"text\" name=\"id\"><br>" +
                 "<input type=\"submit\" value=\"글 상세 보기\">" +
                 "</form><br>" +
+                "<form action=\"/usr/article/Detect\" method=\"GET\">" +
+                "키워드: <input type=\"text\" name=\"keyword\"><br>" +
+                "<input type=\"submit\" value=\"검색하기\">" +
+                "</form>" +
                 "<form action=\"/usr/article/Modify\" method=\"POST\">" +
                 "글 번호: <input type=\"text\" name=\"id\"><br>" +
                 "제목: <input type=\"text\" name=\"title\"><br>" +

@@ -60,4 +60,20 @@ public interface ArticleDao {
 			    WHERE userid = #{userid}
 			""")
 	String getLogin_codeByUserid(String userid);
+
+	@Select("""
+	        SELECT id, regdate, title, writer, viewcount
+			    FROM article
+				ORDER BY id DESC
+	        """)
+	List<Article> getArticleslist();
+
+	
+	@Select("""
+	        SELECT id, regdate, title, writer, viewcount
+			    FROM article
+			    WHERE title LIKE CONCAT('%', #{keyword}, '%') OR body LIKE CONCAT('%', #{keyword}, '%')
+				ORDER BY id DESC
+	        """)
+	List<Article> getArticleslistByKeyword(String keyword);
 }

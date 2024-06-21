@@ -45,8 +45,8 @@ public class UsrArticleController {
 		String userId = (String) request.getSession().getAttribute("userId");
 		checking(request, userId);
 
-		List<Article> articles = articleService.getArticles();
-		return ResultData.from("S-a2", "", articles);
+		List<Article> articles = articleService.getArticleslist();
+		return ResultData.from("S-a2", "리스트확인", articles);
 	}
 
 	@GetMapping("/usr/article/detail")
@@ -59,7 +59,21 @@ public class UsrArticleController {
 		if (foundArticle == null) {
 			return ResultData.from("F-8", "해당되는 게시글이 존재하지 않습니다");
 		}
-		return ResultData.from("S-a2", "작성되었습니다.", foundArticle);
+		return ResultData.from("S-a2", "게시글확인", foundArticle);
+	}
+	
+	@GetMapping("/usr/article/Detect")
+	@ResponseBody
+	public ResultData<List<Article>> showList(HttpServletRequest request, String keyword) {		
+		String userId = (String) request.getSession().getAttribute("userId");
+		checking(request, userId);
+		
+		 if (Util.isEmpty(keyword)) {
+		        return ResultData.from("F-1", "검색 키워드를 입력하세요.", null);
+		    }
+
+		List<Article> articles = articleService.getArticleslist();
+		return ResultData.from("S-a3", "검색결과", articles);
 	}
 
 	@PostMapping("/usr/article/modify")

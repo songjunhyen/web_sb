@@ -54,4 +54,11 @@ public class ArticleService {
 		this.articleDao.deleteArticle(foundArticle);
 	}
 
+	public List<Article> getArticleslist() {
+		return articleDao.getArticleslist();
+	}
+	public List<Article> getArticleslistByKeyword(String keyword) {
+		return articleDao.getArticleslistByKeyword(keyword);
+	}
+
 }
