@@ -53,9 +53,9 @@ public interface ArticleDao {
 				WHERE id = #{id}
 			""")
 	String getWriterById(int id);
-	
+
 	@Select("""
-		    SELECT login_code
+			   SELECT login_code
 			    FROM login_user
 			    WHERE userid = #{userid}
 			""")

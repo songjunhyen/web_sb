@@ -79,11 +79,13 @@ public class UsrUserController {
 
 	@GetMapping("/usr/user/Logout")
 	@ResponseBody
-	public ResultData<?> Logout(String userid) {
+	public ResultData<?> Logout(HttpServletRequest request, String userid) {
 		User foundUser = userService.getUserById(userid);
 		if (foundUser == null) {
 			return ResultData.from("F-6", "해당되는 유저가 존재하지 않습니다");
 		}
+		HttpSession session = request.getSession();
+		session.invalidate();
 		userService.Logout(foundUser);
 		return ResultData.from("S-2", "로그아웃 되었습니다.");
 	}

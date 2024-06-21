@@ -13,6 +13,7 @@ import com.example.demo.vo.Article;
 import com.example.demo.vo.ResultData;
 
 import jakarta.servlet.http.HttpServletRequest;
+import util.Util;
 
 //UsrArticleController 클래스: 
 // 웹 요청을 처리하는 컨트롤러 클래스로, HTTP 요청을 받아 Service를 호출하고, 그 결과를 클라이언트에게 HTML 형태로 반환합니다. 각 요청에 따른 처리를 구현하고 있습니다.
@@ -28,10 +29,11 @@ public class UsrArticleController {
 
 	@PostMapping("/usr/article/doWrite")
 	@ResponseBody
-	public ResultData<Article> doWrite(HttpServletRequest request, @RequestParam String title, @RequestParam String body) {
+	public ResultData<Article> doWrite(HttpServletRequest request, @RequestParam String title,
+			@RequestParam String body) {
 		String writer = (String) request.getSession().getAttribute("userId");
-		checking(request,writer);
-		
+		checking(request, writer);
+
 		Article article = new Article(title, body, writer);
 		articleService.writeArticle(article);
 		return ResultData.from("S-a1", "작성되었습니다.", article);// 서블릿이나 jsp가 받아서 사용
@@ -41,8 +43,8 @@ public class UsrArticleController {
 	@ResponseBody
 	public ResultData<List<Article>> showList(HttpServletRequest request) {
 		String userId = (String) request.getSession().getAttribute("userId");
-		checking(request,userId);
-		
+		checking(request, userId);
+
 		List<Article> articles = articleService.getArticles();
 		return ResultData.from("S-a2", "", articles);
 	}
@@ -51,8 +53,8 @@ public class UsrArticleController {
 	@ResponseBody
 	public ResultData<Article> showDetail(HttpServletRequest request, @RequestParam int id) {
 		String userId = (String) request.getSession().getAttribute("userId");
-		checking(request,userId);
-		
+		checking(request, userId);
+
 		Article foundArticle = articleService.getArticleById(id);
 		if (foundArticle == null) {
 			return ResultData.from("F-8", "해당되는 게시글이 존재하지 않습니다");
@@ -62,11 +64,12 @@ public class UsrArticleController {
 
 	@PostMapping("/usr/article/modify")
 	@ResponseBody
-	public ResultData<?> doModify(HttpServletRequest request, @RequestParam int id, @RequestParam String title, @RequestParam String body) {
+	public ResultData<?> doModify(HttpServletRequest request, @RequestParam int id, @RequestParam String title,
+			@RequestParam String body) {
 		String userId = (String) request.getSession().getAttribute("userId");
-		
-		checking(request,userId);
-		
+
+		checking(request, userId);
+
 		Article foundArticle = articleService.getArticleById(id);
 		if (foundArticle == null) {
 			return ResultData.from("F-8", "해당되는 게시글이 존재하지 않습니다");
@@ -85,8 +88,8 @@ public class UsrArticleController {
 	@ResponseBody
 	public ResultData<?> doDelete(HttpServletRequest request, @RequestParam int id) {
 		String userId = (String) request.getSession().getAttribute("userId");
-		
-		checking(request,userId);
+
+		checking(request, userId);
 
 		Article foundArticle = articleService.getArticleById(id);
 		if (foundArticle == null) {
@@ -99,13 +102,16 @@ public class UsrArticleController {
 		articleService.deleteArticle(userId, foundArticle);
 		return ResultData.from("S-4", "삭제 되었습니다.");
 	}
-	
+
 	private ResultData<Boolean> checking(HttpServletRequest request, String userId) {
-	    String loginCode = (String) request.getSession().getAttribute("loginCode");
-	    boolean isCodeValid = articleService.CheckCode(userId, loginCode);
-	    if (!isCodeValid) {
-	        return ResultData.from("F-3", "변조가 감지되었습니다", false);
-	    }
-	    return ResultData.from("S-0", "안전", true);
+		String loginCode = (String) request.getSession().getAttribute("loginCode");
+		if (Util.isEmpty(loginCode) || Util.isEmpty(userId)) {
+			return ResultData.from("F-0", "세션 정보가 없습니다. 다시 로그인 해주세요.", false);
+		}
+		boolean isCodeValid = articleService.CheckCode(userId, loginCode);
+		if (!isCodeValid) {
+			return ResultData.from("F-3", "변조가 감지되었습니다", false);
+		}
+		return ResultData.from("S-0", "안전", true);
 	}
 }
