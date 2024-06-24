@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,13 +41,15 @@ public class UsrArticleController {
 	}
 
 	@GetMapping("/usr/article/showList")
-	@ResponseBody
-	public ResultData<List<Article>> showList(HttpServletRequest request) {
+	public String showList(HttpServletRequest request, Model model) {
 		String userId = (String) request.getSession().getAttribute("userId");
 		checking(request, userId);
 
 		List<Article> articles = articleService.getArticleslist();
-		return ResultData.from("S-a2", "리스트확인", articles);
+
+		model.addAttribute("articles", articles);
+
+		return "usr/article/articlelist";
 	}
 
 	@GetMapping("/usr/article/detail")
@@ -61,16 +64,16 @@ public class UsrArticleController {
 		}
 		return ResultData.from("S-a2", "게시글확인", foundArticle);
 	}
-	
-	@GetMapping("/usr/article/Detect")
+
+	@GetMapping("/usr/article/Search")
 	@ResponseBody
-	public ResultData<List<Article>> showList(HttpServletRequest request, String keyword) {		
+	public ResultData<List<Article>> showList(HttpServletRequest request, String keyword) {
 		String userId = (String) request.getSession().getAttribute("userId");
 		checking(request, userId);
-		
-		 if (Util.isEmpty(keyword)) {
-		        return ResultData.from("F-1", "검색 키워드를 입력하세요.", null);
-		    }
+
+		if (Util.isEmpty(keyword)) {
+			return ResultData.from("F-1", "검색 키워드를 입력하세요.", null);
+		}
 
 		List<Article> articles = articleService.getArticleslist();
 		return ResultData.from("S-a3", "검색결과", articles);

@@ -7,35 +7,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class UsrHomeController {
     @GetMapping("/usr/home/main")
-    @ResponseBody
     public String showMain() {
-    	return "<html>" +
-                "<body>" +
-                "<h1>메인 페이지</h1>" +
-                "<form action=\"/usr/user/Login\" method=\"post\">\r\n"+
-                "<label for=\"userid\">아이디:</label><br>\r\n"+
-                "<input type=\"text\" id=\"userid\" name=\"userid\" placeholder=\"아이디를 입력해주세요\"><br><br>\r\n"+
-                "<label for=\"userpw\">비밀번호:</label><br>\r\n"+
-                "<input type=\"password\" id=\"userpw\" name=\"userpw\" placeholder=\"비밀번호를 입력해주세요\"><br><br>\r\n"+
-                "<input type=\"submit\" value=\"로그인\">\r\n"+
-                "</form>"+
-                "<br>"+
-                "<form action=\"/usr/user/Signup\" method=\"post\">\r\n"+
-                "<label for=\"userid\">아이디:</label><br>\r\n"+
-                "<input type=\"text\" id=\"userid\" name=\"userid\" placeholder=\"아이디를 입력해주세요\"><br><br>\r\n"+
-                "<label for=\"userpw\">비밀번호:</label><br>\r\n"+
-                "<input type=\"password\" id=\"userpw\" name=\"userpw\" placeholder=\"비밀번호를 입력해주세요\"><br><br>\r\n"+
-                "<label for=\"userpw2\">비밀번호 확인:</label><br>\r\n"+
-                "<input type=\"password\" id=\"userpw\" name=\"userpw2\" placeholder=\"비밀번호를 입력해주세요\"><br><br>\r\n"+
-                "<label for=\"nickname\">닉네임:</label><br>\r\n"+
-                "<input type=\"text\" id=\"nickname\" name=\"nickname\" placeholder=\"닉네임을 입력해주세요\"><br><br>\r\n"+
-                "<input type=\"submit\" value=\"회원가입\">\r\n"+
-                "</form>"+
-                "<br>"+
-                "<a href=\"/usr/user/Logout\">로그아웃</a><br><br>\r\n"+
-                "</body>" +
-                "</html>";
+    	return "usr/home/main";
     }  
+    @GetMapping("/")
+    public String showRoot() {
+    	return "redirect:/usr/home/main";
+    }
 	
     @GetMapping("/usr/home/main2")
     @ResponseBody
@@ -55,7 +33,7 @@ public class UsrHomeController {
                 "글 번호: <input type=\"text\" name=\"id\"><br>" +
                 "<input type=\"submit\" value=\"글 상세 보기\">" +
                 "</form><br>" +
-                "<form action=\"/usr/article/Detect\" method=\"GET\">" +
+                "<form action=\"/usr/article/Search\" method=\"GET\">" +
                 "키워드: <input type=\"text\" name=\"keyword\"><br>" +
                 "<input type=\"submit\" value=\"검색하기\">" +
                 "</form>" +
