@@ -26,8 +26,8 @@ public class UserService {
 		userDao.updateLoginCode(user.getUserid(), loginCode);
 	}
 
-	public String Logout(User foundUser) {
-		return userDao.Logout(foundUser);
+	public void Logout(User foundUser) {
+		userDao.Logout(foundUser);
 	}
 
 	public void Update(User foundUser) {

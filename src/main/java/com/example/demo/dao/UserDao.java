@@ -27,8 +27,8 @@ public interface UserDao {
 	@Update("UPDATE `login_user` SET login_code = #{loginCode} WHERE userid = #{userid}")
 	void updateLoginCode(String userid, String loginCode);
 
-	@Update("UPDATE user SET login_code = null WHERE userid = #{userid}")
-	String Logout(User foundUser);
+	@Delete("DELETE FROM `login_user` WHERE userid = #{userid}")
+	void Logout(User foundUser);
 
 	@Update("UPDATE user SET userpw = #{userpw}, nickname = #{nickname}, updateDate = #{updateDate} WHERE userid = #{userid}")
 	void Update(User foundUser);

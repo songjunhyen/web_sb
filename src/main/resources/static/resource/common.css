@@ -1,0 +1,16 @@
+@charset "UTF-8";
+
+html>body {
+	text-underline-position: under;
+}
+
+.table-box-type>table {
+	width: 80%;
+	margin: 0 auto;
+}
+
+.table-box-type>table th, .table-box-type>table td {
+	border: 1px solid black;
+	padding: 10px;
+	text-align: center;
+}

@@ -27,6 +27,11 @@ public class UsrArticleController {
 	public UsrArticleController(ArticleService articleService) {
 		this.articleService = articleService;
 	}
+	
+	@GetMapping("/usr/article/Main")
+    public String loginPage() {
+        return "usr/aticle/main"; // login.jsp 파일을 반환하도록 설정
+    }
 
 	@PostMapping("/usr/article/doWrite")
 	@ResponseBody
