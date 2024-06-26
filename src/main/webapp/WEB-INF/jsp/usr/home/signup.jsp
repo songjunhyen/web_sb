@@ -5,12 +5,6 @@
 <head>
 <meta charset="UTF-8">
 <title>회원가입</title>
-<script>
-    // 에러 메시지가 있을 때 경고창을 띄우는 함수
-    function showError(errorMessage) {
-        alert(errorMessage);
-    }
-</script>
 </head>
 <body>
     <form action="/usr/user/Signup" method="post">
@@ -27,11 +21,10 @@
         <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력해주세요"><br><br>
         
         <c:if test="${not empty errorMessage}">
-            <script>
-                // 에러 메시지 출력
-                showError("${errorMessage}");
-            </script>
-        </c:if>
+     	   <script>
+       	     alert("${errorMessage}");
+     	   </script>
+   		</c:if>
         
         <input type="submit" value="회원가입">
     </form>

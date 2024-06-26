@@ -40,18 +40,12 @@ public class ArticleService {
 		return this.articleDao.getArticleById(id);
 	}
 
-	public void modifyArticle(String writer, Article foundArticle, String title, String body) {
-		if (!writer.equals(foundArticle.getWriter())) {
-			throw new IllegalStateException("작성자와 로그인 사용자가 일치하지 않습니다.");
-		}
-		this.articleDao.updateArticle(foundArticle, title, body);
+	public void modifyArticle(String writer, String title, String body) {
+		articleDao.updateArticle(writer, title, body);
 	}
 
-	public void deleteArticle(String writer, Article foundArticle) {
-		if (!writer.equals(foundArticle.getWriter())) {
-			throw new IllegalStateException("작성자와 로그인 사용자가 일치하지 않습니다.");
-		}
-		this.articleDao.deleteArticle(foundArticle);
+	public void deleteArticle(Article foundArticle) {
+		articleDao.deleteArticle(foundArticle);
 	}
 
 	public List<Article> getArticleslist() {

@@ -1,4 +1,8 @@
 @charset "UTF-8";
+a {
+    text-decoration: none; /* 링크 밑줄 제거 */
+    color: inherit; /* 부모 요소의 색상 상속 */
+}
 
 html>body {
 	text-underline-position: under;
@@ -13,4 +17,10 @@ html>body {
 	border: 1px solid black;
 	padding: 10px;
 	text-align: center;
+}
+
+.btns>button, bins>a {
+	border: 1px solid black;
+	border-radius : 7px;
+	padding : 5px;	
 }

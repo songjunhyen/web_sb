@@ -4,11 +4,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.example.demo.service.ArticleService;
 import com.example.demo.vo.Article;
 import com.example.demo.vo.ResultData;
@@ -27,22 +28,30 @@ public class UsrArticleController {
 	public UsrArticleController(ArticleService articleService) {
 		this.articleService = articleService;
 	}
-	
+
 	@GetMapping("/usr/article/Main")
-    public String loginPage() {
-        return "usr/aticle/main"; // login.jsp 파일을 반환하도록 설정
-    }
+	public String loginPage() {
+		return "usr/article/main"; // login.jsp 파일을 반환하도록 설정
+	}
+
+	@GetMapping("/usr/article/Write")
+	public String Write() {
+		return "usr/article/write"; // login.jsp 파일을 반환하도록 설정
+	}
 
 	@PostMapping("/usr/article/doWrite")
 	@ResponseBody
-	public ResultData<Article> doWrite(HttpServletRequest request, @RequestParam String title,
-			@RequestParam String body) {
+	public String doWrite(HttpServletRequest request, @RequestParam String title, @RequestParam String body) {
 		String writer = (String) request.getSession().getAttribute("userId");
 		checking(request, writer);
 
+		if (Util.isEmpty(title) || Util.isEmpty(body)) {
+			return Util.jsHistoryBack("내용을 입력해주세요");
+		}
+
 		Article article = new Article(title, body, writer);
 		articleService.writeArticle(article);
-		return ResultData.from("S-a1", "작성되었습니다.", article);// 서블릿이나 jsp가 받아서 사용
+		return Util.jsReplace("작성되었습니다.", "Main");
 	}
 
 	@GetMapping("/usr/article/showList")
@@ -58,71 +67,88 @@ public class UsrArticleController {
 	}
 
 	@GetMapping("/usr/article/detail")
-	@ResponseBody
-	public ResultData<Article> showDetail(HttpServletRequest request, @RequestParam int id) {
+	public String showDetail(HttpServletRequest request, RedirectAttributes redirectAttributes, Model model,
+			@RequestParam int id) {
 		String userId = (String) request.getSession().getAttribute("userId");
 		checking(request, userId);
 
 		Article foundArticle = articleService.getArticleById(id);
 		if (foundArticle == null) {
-			return ResultData.from("F-8", "해당되는 게시글이 존재하지 않습니다");
+			ResultData.from("F-8", "해당되는 게시글이 존재하지 않습니다");
+			redirectAttributes.addFlashAttribute("errorMessage", "해당되는 게시글이 존재하지 않습니다");
+			return "redirect:usr/article/articlelist";
 		}
-		return ResultData.from("S-a2", "게시글확인", foundArticle);
+		ResultData.from("S-a2", "게시글확인", foundArticle);
+		model.addAttribute("foundArticle", foundArticle);
+		return "usr/article/Detail";
 	}
 
 	@GetMapping("/usr/article/Search")
-	@ResponseBody
-	public ResultData<List<Article>> showList(HttpServletRequest request, String keyword) {
+	public String showList(HttpServletRequest request, Model model, String keyword) {
 		String userId = (String) request.getSession().getAttribute("userId");
 		checking(request, userId);
 
 		if (Util.isEmpty(keyword)) {
-			return ResultData.from("F-1", "검색 키워드를 입력하세요.", null);
+			ResultData.from("F-1", "검색 키워드를 입력하세요.", null);
+			request.setAttribute("errorMessage", "검색 키워드를 입력하세요.");
+			return "usr/article/main";
 		}
 
-		List<Article> articles = articleService.getArticleslist();
-		return ResultData.from("S-a3", "검색결과", articles);
+		List<Article> articles = articleService.getArticleslistByKeyword(keyword);
+		ResultData.from("S-a3", "검색결과", articles);
+		model.addAttribute("articles", articles);
+		return "usr/article/articlelist";
+	}
+
+	@GetMapping("/usr/article/Modify")
+	public String Modify(HttpServletRequest request, RedirectAttributes redirectAttributes, @RequestParam int id,
+			Model model) {
+		String userId = (String) request.getSession().getAttribute("userId");
+		checking(request, userId);
+
+		Article foundArticle = articleService.getArticleById(id);
+
+		if (!foundArticle.getWriter().equals(userId)) {
+			request.setAttribute("errorMessage", "수정할 권한이 없습니다.");
+			return "usr/article/articlelist";
+		}
+		model.addAttribute("foundArticle", foundArticle);
+		return "usr/article/modify";
 	}
 
 	@PostMapping("/usr/article/modify")
 	@ResponseBody
-	public ResultData<?> doModify(HttpServletRequest request, @RequestParam int id, @RequestParam String title,
-			@RequestParam String body) {
+	public String doModify(HttpServletRequest request, RedirectAttributes redirectAttributes, @RequestParam int id,
+			@RequestParam String title, @RequestParam String body) {
 		String userId = (String) request.getSession().getAttribute("userId");
 
 		checking(request, userId);
 
 		Article foundArticle = articleService.getArticleById(id);
-		if (foundArticle == null) {
-			return ResultData.from("F-8", "해당되는 게시글이 존재하지 않습니다");
-		}
 
 		// 세션에 저장된 userId와 Article의 작성자(writer)를 비교합니다.
 		if (!userId.equals(foundArticle.getWriter())) {
-			return ResultData.from("F-9", "작성자만 수정할 수 있습니다.");
+			return Util.jsReplace("작성자만 수정할 수 있습니다.","/usr/article/showList");
 		}
 
-		articleService.modifyArticle(userId, foundArticle, title, body);
-		return ResultData.from("S-3", "수정 되었습니다.");
+		articleService.modifyArticle(userId, title, body);
+		return Util.jsReplace("수정되었습니다.","/usr/article/showList");
 	}
 
-	@DeleteMapping("/usr/article/delete")
+	@GetMapping("/usr/article/doDelete")
 	@ResponseBody
-	public ResultData<?> doDelete(HttpServletRequest request, @RequestParam int id) {
+	public String doDelete(HttpServletRequest request, int id) {
 		String userId = (String) request.getSession().getAttribute("userId");
 
 		checking(request, userId);
 
 		Article foundArticle = articleService.getArticleById(id);
-		if (foundArticle == null) {
-			return ResultData.from("F-8", "해당되는 게시글이 존재하지 않습니다");
-		}
 		if (!userId.equals(foundArticle.getWriter())) {
-			return ResultData.from("F-9", "작성자만 삭제할 수 있습니다.");
+			return Util.jsReplace("작성자만 삭제할 수 있습니다.", "/usr/article/showList");
 		}
+		articleService.deleteArticle(foundArticle);
 
-		articleService.deleteArticle(userId, foundArticle);
-		return ResultData.from("S-4", "삭제 되었습니다.");
+		return Util.jsReplace(String.format("%d번 게시물을 삭제했습니다", id), "showList");
 	}
 
 	private ResultData<Boolean> checking(HttpServletRequest request, String userId) {

@@ -51,8 +51,10 @@
 </head>
 <body>
 	<div class="page">
-		<a href="/" class="logo"><span>로고</span></a>
+		<div><a href="/usr/article/Main"><span>로고</span></a></div>
+			
 		<ul>
-			<li><a href="/">HOME</a></li>
+			<li><a href="/usr/article/Main"><span>HOME</span></a></li>
+			<li><a href="/usr/article/showList"><span>LIST</span></a></li>
 		</ul>
 	</div>

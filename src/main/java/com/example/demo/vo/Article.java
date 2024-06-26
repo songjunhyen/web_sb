@@ -18,7 +18,7 @@ public class Article {
     private LocalDateTime updateDate; // updateDate는 수정 시 자동 업데이트되어야 함
     private int viewcount;
 
-    public Article(String title, String body, String writer) {
+    public Article(String title, String body, String writer) {    	
         this.title = title;
         this.body = body;
         this.writer = writer;

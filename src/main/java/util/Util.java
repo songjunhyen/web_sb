@@ -9,6 +9,43 @@ public class Util {
 		return key == null || key.length() == 0;
 	}
 
+	public static String jsReplace(String msg, String url) {
+		if (msg == null) {
+			msg = "";
+		}
+		if (url == null) {
+			url = "";
+		}
+		return String.format("""
+				    <script>
+				        const msg = '%s'.trim();
+
+				        if (msg.length > 0) {
+				            alert(msg);
+				        }
+
+				        location.replace('%s');
+				    </script>
+				""", msg, url);
+	}
+
+	public static String jsHistoryBack(String msg) {
+		if (msg == null) {
+			msg = "";
+		}
+		return String.format("""
+				    <script>
+				        const msg = '%s'.trim();
+
+				        if (msg.length > 0) {
+				            alert(msg);
+				        }
+
+				        history.back();
+				    </script>
+				""", msg);
+	}
+
 	public static String formatDate(String dateStr) {
 		if (isEmpty(dateStr)) {
 			return "";

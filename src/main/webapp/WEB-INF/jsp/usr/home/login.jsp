@@ -5,12 +5,16 @@
 <head>
 <meta charset="UTF-8">
 <title>로그인</title>
-<script>
-	// 에러 메시지가 있을 때 경고창을 띄우는 함수
-	function showError(errorMessage) {
-		alert(errorMessage);
-	}
-</script>
+<!-- 데이지 UI -->
+<link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.8/dist/full.min.css" rel="stylesheet" type="text/css" />
+<!-- 테일윈드 -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- 폰트어썸 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"></script>
+<!-- 제이쿼리 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<!-- 공통 css -->
+<link rel="stylesheet" href="/resource/common.css" />
 </head>
 <body>
 	<a href="/">홈으로</a>
@@ -22,14 +26,8 @@
 			type="password" id="userpw" name="userpw" placeholder="비밀번호를 입력해주세요"><br>
 		<br>
 
-		<c:if test="${not empty errorMessage}">
-			<script>
-				// 에러 메시지 출력
-				showError("${errorMessage}");
-			</script>
-		</c:if>
-
 		<input type="submit" value="로그인">
 	</form>
 </body>
 </html>
+

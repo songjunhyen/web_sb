@@ -36,10 +36,10 @@ public interface ArticleDao {
 
 	@Update("""
 			UPDATE article
-				SET title = #{title}, `body` = #{body}, updateDate = #{updateDate}
-				WHERE id = #{id}
+				SET title = #{title}, `body` = #{body}, updateDate = now()
+				WHERE writer = #{writer}
 			""")
-	void updateArticle(Article article, String title, String body);
+	void updateArticle(String writer, String title, String body);
 
 	@Delete("""
 			DELETE FROM article
