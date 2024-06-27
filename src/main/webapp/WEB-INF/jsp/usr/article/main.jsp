@@ -14,7 +14,13 @@
     <br>
     <button onclick="location.href='/usr/article/Write'" class="btn btn-sm btn-primary">글쓰기</button>
     <br>
-    <a href="/usr/article/showList">글 목록 보기</a>
+    <a href="/usr/article/showList?boardid=0">모든게시글 목록</a>
+    <br>
+    <a href="/usr/article/showList?boardid=1">공지사항 게시판 보기</a>
+    <br>
+    <a href="/usr/article/showList?boardid=2">자유 게시판 보기</a>
+    <br>
+    <a href="/usr/article/showList?boardid=3">기타 게시판 보기</a>
     <br>
     <form action="/usr/article/Search" method="GET">
         키워드: <input type="text" name="keyword"><br>

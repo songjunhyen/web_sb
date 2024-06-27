@@ -41,26 +41,30 @@ public class UsrArticleController {
 
 	@PostMapping("/usr/article/doWrite")
 	@ResponseBody
-	public String doWrite(HttpServletRequest request, @RequestParam String title, @RequestParam String body) {
+	public String doWrite(HttpServletRequest request, @RequestParam String title, @RequestParam String body, @RequestParam String boardid) {
 		String writer = (String) request.getSession().getAttribute("userId");
 		checking(request, writer);
 
 		if (Util.isEmpty(title) || Util.isEmpty(body)) {
 			return Util.jsHistoryBack("내용을 입력해주세요");
 		}
+		if(Util.isEmpty(boardid)) {
+			return Util.jsHistoryBack("게시판을 선택해주세요");
+		}
 
 		Article article = new Article(title, body, writer);
-		articleService.writeArticle(article);
+		articleService.writeArticle(article, boardid);
 		return Util.jsReplace("작성되었습니다.", "Main");
 	}
 
 	@GetMapping("/usr/article/showList")
-	public String showList(HttpServletRequest request, Model model) {
+	public String showList(HttpServletRequest request, Model model,@RequestParam String boardid) {
 		String userId = (String) request.getSession().getAttribute("userId");
 		checking(request, userId);
 
-		List<Article> articles = articleService.getArticleslist();
-
+		List<Article> articles = articleService.getArticleslist(boardid);
+	   
+		model.addAttribute("boardid", boardid);
 		model.addAttribute("articles", articles);
 
 		return "usr/article/articlelist";
@@ -84,7 +88,7 @@ public class UsrArticleController {
 	}
 
 	@GetMapping("/usr/article/Search")
-	public String showList(HttpServletRequest request, Model model, String keyword) {
+	public String searchList(HttpServletRequest request, Model model, String keyword) {
 		String userId = (String) request.getSession().getAttribute("userId");
 		checking(request, userId);
 
@@ -118,7 +122,7 @@ public class UsrArticleController {
 
 	@PostMapping("/usr/article/modify")
 	@ResponseBody
-	public String doModify(HttpServletRequest request, RedirectAttributes redirectAttributes, @RequestParam int id,
+	public String doModify(HttpServletRequest request, @RequestParam int id,
 			@RequestParam String title, @RequestParam String body) {
 		String userId = (String) request.getSession().getAttribute("userId");
 

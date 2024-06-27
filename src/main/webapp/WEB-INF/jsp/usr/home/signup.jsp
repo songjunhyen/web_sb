@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>회원가입</title>
+    <%@ include file="../../common/head2.jsp"%>
 </head>
 <body>
     <form action="/usr/user/Signup" method="post">

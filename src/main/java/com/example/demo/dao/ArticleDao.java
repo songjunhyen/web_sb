@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -29,10 +30,10 @@ public interface ArticleDao {
 				ORDER BY id DESC
 			""")
 	List<Article> getAllArticles();
-
-	@Insert("INSERT INTO article (regDate, updateDate, title, `body`, writer, viewcount) "
-			+ "VALUES (#{regDate}, #{updateDate}, #{title}, #{body}, #{writer}, #{viewcount})")
-	void writeArticle(Article article);
+	
+	@Insert("INSERT INTO article (regDate, updateDate, title, `body`, writer, boardid, viewcount) "
+	        + "VALUES (#{article.regDate}, #{article.updateDate}, #{article.title}, #{article.body}, #{article.writer}, #{boardid}, #{article.viewcount})")
+	void writeArticle(@Param("article") Article article, @Param("boardid") int boardid);
 
 	@Update("""
 			UPDATE article
@@ -68,6 +69,13 @@ public interface ArticleDao {
 	        """)
 	List<Article> getArticleslist();
 
+	@Select("""
+	        SELECT id, regdate, title, writer, viewcount
+			    FROM article
+			    WHERE boardid =  #{boardid}
+				ORDER BY id DESC
+	        """)
+	List<Article> getArticleslist2(String boardid);
 	
 	@Select("""
 	        SELECT id, regdate, title, writer, viewcount

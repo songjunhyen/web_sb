@@ -11,14 +11,18 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class BeforeActionInterceptor implements HandlerInterceptor {
+	
+	//Rq 클래스를 의존성 주입 받고 있다. 의존성 주입은 생성자를 통해 이루어지며, 이를 통해 Rq 객체를 인스턴스화하고 필드로 할당
+	private Rq rq;
+	public BeforeActionInterceptor(Rq rq) {
+		this.rq = rq;
+	}//인스턴스가 생성되기 위해서는 한 번 이상 호출해야 인스턴스가 생성된다.
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 
-		Rq rq = new Rq(request, response);
-		
-		request.setAttribute("rq", rq);
+		rq.init();
 
 		return HandlerInterceptor.super.preHandle(request, response, handler);
 	}

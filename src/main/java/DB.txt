@@ -2,55 +2,72 @@ DROP DATABASE IF EXISTS jsp_sb_article_manager;
 CREATE DATABASE jsp_sb_article_manager;
 USE jsp_sb_article_manager;
 
-CREATE TABLE `user`(
-    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT
-    , regDate DATETIME NOT NULL
-    , updateDate DATETIME NOT NULL
-    , userid VARCHAR(30) NOT NULL UNIQUE
-    , userpw VARBINARY(60) NOT NULL
-    , nickname VARCHAR(30) NOT NULL
-    , logined BOOLEAN NOT NULL
-    , INDEX idx_id (id)  -- 이 부분이 id 컬럼에 인덱스를 추가하는 것
+CREATE TABLE `user` (
+    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    regDate DATETIME NOT NULL,
+    updateDate DATETIME NOT NULL,
+    userid VARCHAR(30) NOT NULL UNIQUE,
+    userpw VARCHAR(60) NOT NULL,
+    nickname VARCHAR(30) NOT NULL,
+    INDEX idx_id (id) 
 );
 
-CREATE TABLE article(
-    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT
-    , regDate DATETIME NOT NULL
-    , updateDate DATETIME NOT NULL
-    , title VARCHAR(255) NOT NULL
-    , `body` TEXT NOT NULL
-    , writer VARCHAR(30) NOT NULL
-    , viewcount INT UNSIGNED NOT NULL DEFAULT 0
-    , FOREIGN KEY (writer) REFERENCES USER(id) ON DELETE CASCADE-- 외래 키 제약 조건 추가
-    , INDEX idx_id (id) -- num 컬럼에 인덱스 추가
-    , INDEX idx_writer (writer) -- writer 컬럼에 인덱스 추가
-    , INDEX idx_id_writer (id, writer) -- num과 writer 컬럼의 복합 인덱스 추가
+CREATE TABLE board (
+    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `name` VARCHAR(20) NOT NULL COMMENT '게시판이름'
 );
 
-CREATE TABLE `login_user`(
-    num INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT
-    , userid VARCHAR(30) NOT NULL UNIQUE
-    , nickname VARCHAR(30) NOT NULL
-    , login_code VARCHAR(255) NOT NULL UNIQUE
+CREATE TABLE article (
+    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    regDate DATETIME NOT NULL,
+    updateDate DATETIME NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    `body` TEXT NOT NULL,
+    writer VARCHAR(30) NOT NULL,
+    boardId INT UNSIGNED NOT NULL,
+    viewcount INT UNSIGNED NOT NULL DEFAULT 0,
+    FOREIGN KEY (writer) REFERENCES `user`(userid) ON DELETE CASCADE,
+    FOREIGN KEY (boardId) REFERENCES board(id) ON DELETE CASCADE,
+    INDEX idx_id (id),
+    INDEX idx_writer (writer),
+    INDEX idx_id_writer (id, writer)
+);
+
+CREATE TABLE `login_user` (
+    num INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    userid VARCHAR(30) NOT NULL UNIQUE,
+    nickname VARCHAR(30) NOT NULL,
+    login_code VARCHAR(255) NOT NULL UNIQUE
 );
 
 INSERT INTO `user`
 SET regDate = NOW(),
     updateDate = NOW(),
-    id = CONCAT('테스터', RAND()),
-    pw = 'hashed_password', -- 실제 해시된 비밀번호 값으로 대체
-    nickname = '테스터',
-    logined = FALSE;
-    
+    userid = 'tester_1',
+    userpw = 'hashed_password', -- 실제 해시된 비밀번호 값으로 대체
+    nickname = '테스터';
+
+INSERT INTO board (NAME) VALUES ('공지사항'), ('자유게시판');
+
 INSERT INTO article
 SET regDate = NOW(),
     updateDate = NOW(),
     title = CONCAT('제목_', RAND()),
     `body` = CONCAT('내용_', RAND()),
-    writer = '테스터';
+    writer = 'tester_1',
+    boardId = 1;
+INSERT INTO article
+SET regDate = NOW(),
+    updateDate = NOW(),
+    title = CONCAT('제목_', RAND()),
+    `body` = CONCAT('내용_', RAND()),
+    writer = 'tester_1',
+    boardId = 2;
+
 
 SELECT * FROM article;
 SELECT * FROM `user`;
 SELECT * FROM `login_user`;
+SELECT * FROM board;
 
 SELECT * FROM article ORDER BY id DESC

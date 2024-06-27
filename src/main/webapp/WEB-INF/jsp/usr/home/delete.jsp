@@ -5,6 +5,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+    <%@ include file="../../common/head2.jsp"%>
+
 </head>
 <body>
 	<form action="/usr/user/delete" method="post">

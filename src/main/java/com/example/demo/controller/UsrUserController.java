@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.service.UserService;
+import com.example.demo.vo.Rq;
 import com.example.demo.vo.User;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,9 +20,11 @@ import util.Util;
 @Controller
 public class UsrUserController {
 	private UserService userService;
+	private Rq rq;
 
-	public UsrUserController(UserService userService) {
+	public UsrUserController(UserService userService, Rq rq) {
 		this.userService = userService;
+		this.rq = rq;
 	}
 	
 	@GetMapping("/usr/home/login")
@@ -36,7 +39,7 @@ public class UsrUserController {
 	@PostMapping("/usr/user/Signup")
 	@ResponseBody 
 	public String Signup(@RequestParam String userid, @RequestParam String userpw, @RequestParam String userpw2,
-			@RequestParam String nickname, HttpServletRequest request) {
+			@RequestParam String nickname) {
 		// 입력값 검증
 		if (Util.isEmpty(userid)) {
 			return Util.jsHistoryBack("아이디를 입력해주세요");
@@ -62,8 +65,7 @@ public class UsrUserController {
 
 	@PostMapping("/usr/user/Login")
 	@ResponseBody 
-	public String login(HttpServletRequest request, RedirectAttributes redirectAttributes,
-	                    @RequestParam String userid, @RequestParam String userpw) {
+	public String login(HttpServletRequest request, @RequestParam String userid, @RequestParam String userpw) {
 	    User user = userService.Login(userid, userpw);
 
 	    if (user == null) {
@@ -75,10 +77,11 @@ public class UsrUserController {
 
 	    // 로그인 세션 관리를 위해 loginCode를 userService를 통해 업데이트
 	    userService.updateUserLoginSession(user, loginCode);
+	    
+	    rq.login(user);
 
 	    // 세션에 userId, loginCode 저장
 	    HttpSession session = request.getSession();
-	    session.setAttribute("loginedMemberId", user.getId());
 	    session.setAttribute("userId", userid);
 	    session.setAttribute("loginCode", loginCode);
 
@@ -88,7 +91,8 @@ public class UsrUserController {
 	
 	@PostMapping("/usr/user/Logout")
 	@ResponseBody 
-	public String Logout(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+	public String Logout(HttpServletRequest request) {
+		rq.logout();
 		HttpSession session = request.getSession();
 		String userid = (String) session.getAttribute("userId");
 		User foundUser = userService.getUserById(userid);
@@ -104,9 +108,19 @@ public class UsrUserController {
 	
 	@PostMapping("/usr/user/Update")
 	@ResponseBody 
-	public String Update(HttpServletRequest request, RedirectAttributes redirectAttributes, @RequestParam String userid, @RequestParam String userpw, @RequestParam String pw,
+	public String Update(HttpServletRequest request, @RequestParam String userid, @RequestParam String userpw, @RequestParam String pw,
 			@RequestParam String nickname) {
 
+		if (Util.isEmpty(userid)) {
+			return Util.jsHistoryBack("아이디를 입력해주세요");
+		}
+		if (Util.isEmpty(userpw)) {
+			return Util.jsHistoryBack("비밀번호를 입력해주세요");
+		}
+		if (Util.isEmpty(nickname)) {
+			return Util.jsHistoryBack("사용할 이름을 입력해주세요");
+		}
+		
 		User foundUser = userService.getUserById(userid);
 
 		HttpSession session = request.getSession();
