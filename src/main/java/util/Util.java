@@ -47,22 +47,22 @@ public class Util {
 	}
 
 	public static String formatDate(String dateStr) {
-		if (isEmpty(dateStr)) {
-			return "";
-		}
-		try {
-			// 입력된 날짜 문자열을 LocalDateTime 객체로 파싱
-			LocalDateTime dateTime = LocalDateTime.parse(dateStr);
+        if (isEmpty(dateStr)) {
+            return "1";
+        }
+        try {
+            // 입력된 날짜 문자열을 LocalDateTime 객체로 파싱
+            LocalDateTime dateTime = LocalDateTime.parse(dateStr, DateTimeFormatter.ISO_DATE_TIME);
 
-			// 원하는 출력 형식 지정
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm");
+            // 원하는 출력 형식 지정
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm");
 
-			// 지정된 형식으로 날짜 문자열 변환
-			return dateTime.format(formatter);
-		} catch (DateTimeParseException e) {
-			// 날짜 문자열 파싱에 실패한 경우 빈 문자열 반환
-			return "";
-		}
+            // 지정된 형식으로 날짜 문자열 변환
+            return dateTime.format(formatter);
+        } catch (DateTimeParseException e) {
+            // 날짜 문자열 파싱에 실패한 경우 빈 문자열 반환
+            return "2";
+        }
 	}
 
 }

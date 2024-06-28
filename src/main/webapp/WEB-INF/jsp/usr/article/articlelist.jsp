@@ -4,6 +4,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ page import="java.util.List"%>
 <%@ page import="com.example.demo.vo.Article"%>
+<%@ page import="util.Util"%>
+
 
 <!DOCTYPE html>
 <html>
@@ -45,7 +47,7 @@
                             	<td>${article.id}</td>
                                 <td><a href="detail?id=${article.id}">${article.title}</a></td>
                                 <td>${article.writer}</td>
-                                <td>${fn:substring(article.regDate, 0, 10)}</td>
+                                <td>${Util.formatDate(article.regDate)}</td>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -85,19 +87,19 @@
     <a href="/usr/article/Write">글쓰기</a>
     <br>
     
-<form action="/usr/article/Search" method="GET">
-    <label for="boardid">게시판 선택:</label>
-    <select name="boardid" id="boardid">
-        <option value="0">모든 게시글</option>
-        <option value="1">공지사항</option>
-        <option value="2">자유 게시판</option>
-        <option value="3">기타 게시판</option>
-    </select>
-    <br>
-    키워드: <input type="text" name="keyword" value="${param.keyword}">
-    <br>
-    <input type="submit" value="검색하기">
-</form>
+	<form action="/usr/article/Search" method="GET">
+	    <label for="boardid">게시판 선택:</label>
+	    <select name="boardid" id="boardid">
+	        <option value="0">모든 게시글</option>
+	        <option value="1">공지사항</option>
+	        <option value="2">자유 게시판</option>
+	        <option value="3">기타 게시판</option>
+	    </select>
+	    <br>
+	    키워드: <input type="text" name="keyword" value="${param.keyword}">
+	    <br>
+	    <input type="submit" value="검색하기">
+	</form>
     
     <c:if test="${not empty errorMessage}">
         <script>
