@@ -5,7 +5,6 @@
 <%@ page import="java.util.List"%>
 <%@ page import="com.example.demo.vo.Article"%>
 
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,6 +20,9 @@
         <c:when test="${boardid == '2'}">
             <h1>자유게시판</h1>
         </c:when>
+       <c:when test="${boardid == '3'}">
+            <h1>기타</h1>
+        </c:when>
         <c:otherwise>
             <h1>전체 게시글</h1>
         </c:otherwise>
@@ -32,6 +34,7 @@
                 <table>
                     <thead>
                         <tr>
+                            <th>번호</th>
                             <th>제목</th>
                             <th>작성자</th>
                             <th>작성일</th>
@@ -40,6 +43,7 @@
                     <tbody>
                         <c:forEach var="article" items="${articles}">
                             <tr>
+                            	<td>${article.id}</td>
                                 <td><a href="detail?id=${article.id}">${article.title}</a></td>
                                 <td>${article.writer}</td>
                                 <td>${fn:substring(article.regDate, 0, 10)}</td>
@@ -48,9 +52,34 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div>        
     </section>
 
+    <%-- 페이징 버튼 --%>
+    <div>
+        <%-- 이전 페이지 --%>
+        <c:if test="${currentPage > 1}">
+            <a href="?boardid=${boardid}&page=${currentPage - 1}">이전</a>
+        </c:if>
+
+        <%-- 페이지 번호 --%>
+        <c:forEach begin="1" end="${totalPages}" varStatus="loop">
+            <c:choose>
+                <c:when test="${loop.index == currentPage}">
+                    <strong>${loop.index}</strong>
+                </c:when>
+                <c:otherwise>
+                    <a href="?boardid=${boardid}&page=${loop.index}">${loop.index}</a>
+                </c:otherwise>
+            </c:choose>
+        </c:forEach>
+
+        <%-- 다음 페이지 --%>
+        <c:if test="${currentPage < totalPages}">
+            <a href="?boardid=${boardid}&page=${currentPage + 1}">다음</a>
+        </c:if>
+    </div>
+    <button onclick="history.back();">뒤로가기</button>
     <br>
     <a href="/usr/article/Write">글쓰기</a>
     <br>

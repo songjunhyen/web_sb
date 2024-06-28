@@ -20,12 +20,14 @@
             <option value="">게시판을 선택하세요</option>
             <option value="1">공지사항</option>
             <option value="2">자유게시판</option>
+            <option value="3">기타</option>
         </select><br><br>
 
         <input type="hidden" id="boardId" name="boardid" value="">
 
         <button type="submit">Submit</button>
     </form>
+        <button onclick="history.back();">뒤로가기</button>
 
     <script>
         function setBoardId() {

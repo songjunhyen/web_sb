@@ -36,6 +36,7 @@ Article foundArticle = (Article) request.getAttribute("foundArticle");
                 </div>
             </div>
         </div>
+            <button onclick="history.back();">뒤로가기</button>
     </section>
 	<form action="/usr/article/modify" method="POST">
         <input type="hidden" name="id" value="${foundArticle.id}">
@@ -43,5 +44,6 @@ Article foundArticle = (Article) request.getAttribute("foundArticle");
 		내용: <input type="text" name="body"><br>
 		<input type="submit" value="글 수정하기">
 	</form>
+	
 </body>
 </html>

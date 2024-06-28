@@ -58,15 +58,28 @@ public class UsrArticleController {
 	}
 
 	@GetMapping("/usr/article/showList")
-	public String showList(HttpServletRequest request, Model model,@RequestParam String boardid) {
-		String userId = (String) request.getSession().getAttribute("userId");
-		checking(request, userId);
+	public String showList(HttpServletRequest request, Model model, @RequestParam String boardid, @RequestParam(defaultValue = "1") int page) {
+	    String userId = (String) request.getSession().getAttribute("userId");
+	    checking(request, userId);
 
 		List<Article> articles = articleService.getArticleslist(boardid);
-	   
+		 // 페이징 관련 설정
+        int pageSize = 10; // 한 페이지에 보여줄 게시물 수
+        int totalCount = articles.size();
+        int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+        int start = (page - 1) * pageSize;
+        int end = Math.min(start + pageSize, totalCount);
+
+        List<Article> paginatedArticles = articles.subList(start, end);
+
+        model.addAttribute("boardid", boardid);
+        model.addAttribute("articles", paginatedArticles);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        /*
 		model.addAttribute("boardid", boardid);
 		model.addAttribute("articles", articles);
-
+		*/
 		return "usr/article/articlelist";
 	}
 
