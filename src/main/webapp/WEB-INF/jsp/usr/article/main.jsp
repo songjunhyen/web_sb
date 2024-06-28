@@ -22,10 +22,21 @@
     <br>
     <a href="/usr/article/showList?boardid=3">기타 게시판 보기</a>
     <br>
-    <form action="/usr/article/Search" method="GET">
-        키워드: <input type="text" name="keyword"><br>
-        <input type="submit" value="검색하기">
-    </form>
+    
+	<form action="/usr/article/Search" method="GET">
+	    <label for="boardid">게시판 선택:</label>
+	    <select name="boardid" id="boardid">
+	        <option value="0">모든 게시글</option>
+	        <option value="1">공지사항</option>
+	        <option value="2">자유 게시판</option>
+	        <option value="3">기타 게시판</option>
+	    </select>
+	    <br>
+	    키워드: <input type="text" name="keyword" value="${param.keyword}">
+	    <br>
+	    <input type="submit" value="검색하기">
+	</form>
+	
     <br>
     <a href="/usr/user/updated">회원정보 수정</a>
     <br>

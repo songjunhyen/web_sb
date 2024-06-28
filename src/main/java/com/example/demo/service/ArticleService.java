@@ -59,8 +59,12 @@ public class ArticleService {
 		}
 	}
 
-	public List<Article> getArticleslistByKeyword(String keyword) {
-		return articleDao.getArticleslistByKeyword(keyword);
+	public List<Article> getArticleslistByKeyword(String keyword, String boardid) {
+		int boardid1 = Integer.parseInt(boardid);
+		if(boardid1==0) {
+			return articleDao.getArticleslistByKeyword2(keyword);
+		}
+		return articleDao.getArticleslistByKeyword(keyword, boardid1);
 	}
 
 }

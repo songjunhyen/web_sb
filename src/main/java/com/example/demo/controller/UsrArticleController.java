@@ -101,7 +101,8 @@ public class UsrArticleController {
 	}
 
 	@GetMapping("/usr/article/Search")
-	public String searchList(HttpServletRequest request, Model model, String keyword) {
+	public String searchList(HttpServletRequest request, Model model, @RequestParam String keyword, 
+            @RequestParam(defaultValue = "0") String boardid, @RequestParam(defaultValue = "1") int page) {
 		String userId = (String) request.getSession().getAttribute("userId");
 		checking(request, userId);
 
@@ -111,9 +112,20 @@ public class UsrArticleController {
 			return "usr/article/main";
 		}
 
-		List<Article> articles = articleService.getArticleslistByKeyword(keyword);
+		List<Article> articles = articleService.getArticleslistByKeyword(keyword,boardid);	
+		int pageSize = 10; // 한 페이지에 보여줄 게시물 수
+	    int totalCount = articles.size();
+	    int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+	    int start = (page - 1) * pageSize;
+	    int end = Math.min(start + pageSize, totalCount);
+
+	    List<Article> paginatedArticles = articles.subList(start, end);
 		ResultData.from("S-a3", "검색결과", articles);
-		model.addAttribute("articles", articles);
+	    model.addAttribute("keyword", keyword);
+        model.addAttribute("boardid", boardid);
+        model.addAttribute("articles", paginatedArticles);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
 		return "usr/article/articlelist";
 	}
 

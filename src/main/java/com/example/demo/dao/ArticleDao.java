@@ -80,8 +80,16 @@ public interface ArticleDao {
 	@Select("""
 	        SELECT id, regdate, title, writer, viewcount
 			    FROM article
+			    WHERE boardid = #{boardid}
+				AND (title LIKE CONCAT('%', #{keyword}, '%') OR body LIKE CONCAT('%', #{keyword}, '%'))
+				ORDER BY id DESC
+	        """)
+	List<Article> getArticleslistByKeyword(String keyword, int boardid);
+	@Select("""
+	        SELECT id, regdate, title, writer, viewcount
+			    FROM article
 			    WHERE title LIKE CONCAT('%', #{keyword}, '%') OR body LIKE CONCAT('%', #{keyword}, '%')
 				ORDER BY id DESC
 	        """)
-	List<Article> getArticleslistByKeyword(String keyword);
+	List<Article> getArticleslistByKeyword2(String keyword);
 }
