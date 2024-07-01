@@ -10,17 +10,16 @@
 </head>
 <body>
     <br><br>
-    <h1>메인 페이지</h1>
     <br>
     <button onclick="location.href='/usr/article/Write'" class="btn btn-sm btn-primary">글쓰기</button>
     <br>
-    <a href="/usr/article/showList?boardid=0">모든게시글 목록</a>
+    <button onclick="location.href='/usr/article/showList?boardid=0'" class="btn btn-sm btn-link">모든게시글 목록</button>
     <br>
-    <a href="/usr/article/showList?boardid=1">공지사항 게시판 보기</a>
+    <button onclick="location.href='/usr/article/showList?boardid=1'" class="btn btn-sm btn-link">공지사항 게시판 보기</button>
     <br>
-    <a href="/usr/article/showList?boardid=2">자유 게시판 보기</a>
+    <button onclick="location.href='/usr/article/showList?boardid=2'" class="btn btn-sm btn-link">자유 게시판 보기</button>
     <br>
-    <a href="/usr/article/showList?boardid=3">기타 게시판 보기</a>
+    <button onclick="location.href='/usr/article/showList?boardid=3'" class="btn btn-sm btn-link">기타 게시판 보기</button>
     <br>
     
 	<form action="/usr/article/Search" method="GET">
@@ -34,17 +33,17 @@
 	    <br>
 	    키워드: <input type="text" name="keyword" value="${param.keyword}">
 	    <br>
-	    <input type="submit" value="검색하기">
+	    <input type="submit" class="btn btn-sm btn-primary" value="검색하기">
 	</form>
 	
     <br>
-    <a href="/usr/user/updated">회원정보 수정</a>
+    <button onclick="location.href='/usr/user/updated'" class="btn btn-sm btn-link">회원정보 수정</button>
     <br>
-    <a href="/usr/user/delete">회원정보 삭제</a>
+    <button onclick="location.href='/usr/user/delete'" class="btn btn-sm btn-link">회원정보 삭제</button>
     <br>
     
     <form action="/usr/user/Logout" method="post">
-        <button type="submit">로그아웃</button>
+        <button type="submit" class="btn btn-sm btn-danger">로그아웃</button>
     </form>
     
     <c:if test="${not empty errorMessage}">

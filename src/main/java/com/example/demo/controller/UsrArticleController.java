@@ -15,6 +15,8 @@ import com.example.demo.vo.Article;
 import com.example.demo.vo.ResultData;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
 import util.Util;
 
 //UsrArticleController 클래스: 
@@ -84,22 +86,42 @@ public class UsrArticleController {
 	}
 
 	@GetMapping("/usr/article/detail")
-	public String showDetail(HttpServletRequest request, RedirectAttributes redirectAttributes, Model model,
-			@RequestParam int id) {
-		String userId = (String) request.getSession().getAttribute("userId");
-		checking(request, userId);
+	public String showDetail(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes, Model model,
+	        @RequestParam int id) {
+	    String userId = (String) request.getSession().getAttribute("userId");
+	    checking(request, userId); // 이 부분에서 checking 메소드를 호출하는데, 해당 메소드가 무엇을 하는지에 대한 정보가 없습니다.
 
-		Article foundArticle = articleService.getArticleById(id);
-		if (foundArticle == null) {
-			ResultData.from("F-8", "해당되는 게시글이 존재하지 않습니다");
-			redirectAttributes.addFlashAttribute("errorMessage", "해당되는 게시글이 존재하지 않습니다");
-			return "redirect:usr/article/articlelist";
-		}
-		ResultData.from("S-a2", "게시글확인", foundArticle);
-		model.addAttribute("foundArticle", foundArticle);
-		return "usr/article/Detail";
+	    boolean isViewed = false;
+	    Cookie[] cookies = request.getCookies();
+	    if (cookies != null) {
+	        for (Cookie cookie : cookies) {
+	            if (cookie.getName().equals("viewedArticle_" + id)) {
+	                isViewed = true;
+	                break;
+	            }
+	        }
+	    }
+
+	    if (!isViewed) {
+	        Cookie cookie = new Cookie("viewedArticle_" + id, "true");
+	        cookie.setMaxAge(10); // 오타 수정: setMaxAge로 수정
+	        response.addCookie(cookie);
+	        articleService.upviewArticleById(id,userId);
+	    }
+
+	    Article foundArticle = articleService.getArticleById(id);
+	    if (foundArticle == null) {
+	        redirectAttributes.addFlashAttribute("errorMessage", "해당되는 게시글이 존재하지 않습니다");
+	        return "redirect:/usr/article/articlelist"; // 경로 수정: "redirect:"를 추가하여 절대 경로로 변경
+	    }
+	    
+	    // ResultData.from 메소드가 호출되었지만, 반환값을 사용하지 않고 있습니다.
+	    // 이 부분이 의도한 대로 동작하도록 수정이 필요합니다.
+	    //ResultData resultData = ResultData.from("S-a2", "게시글 확인", foundArticle);
+	    model.addAttribute("foundArticle", foundArticle);
+	    return "usr/article/Detail";
 	}
-
+	
 	@GetMapping("/usr/article/Search")
 	public String searchList(HttpServletRequest request, Model model, @RequestParam String keyword, 
             @RequestParam(defaultValue = "0") String boardid, @RequestParam(defaultValue = "1") int page) {

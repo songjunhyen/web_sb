@@ -30,6 +30,7 @@
         </c:otherwise>
     </c:choose>
     <section>
+
         <div>
             <div class="table-box-type">
                 <table>
@@ -38,6 +39,7 @@
                             <th>번호</th>
                             <th>제목</th>
                             <th>작성자</th>
+                            <th>조회수</th>
                             <th>작성일</th>
                         </tr>
                     </thead>
@@ -47,6 +49,7 @@
                             	<td>${article.id}</td>
                                 <td><a href="detail?id=${article.id}">${article.title}</a></td>
                                 <td>${article.writer}</td>
+                                <td>${article.viewcount}</td>
                                 <td>${Util.formatDate(article.regDate)}</td>
                             </tr>
                         </c:forEach>
@@ -81,12 +84,11 @@
 	    </c:if>
 	</div>
 
-    </div>
     <button onclick="history.back();">뒤로가기</button>
     <br>
     <a href="/usr/article/Write">글쓰기</a>
     <br>
-    
+
 	<form action="/usr/article/Search" method="GET">
 	    <label for="boardid">게시판 선택:</label>
 	    <select name="boardid" id="boardid">

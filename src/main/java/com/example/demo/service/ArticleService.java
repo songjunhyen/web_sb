@@ -40,7 +40,15 @@ public class ArticleService {
 	}
 
 	public Article getArticleById(int id) {
-		return this.articleDao.getArticleById(id);
+		Article article = articleDao.getArticleById(id);
+		return article;
+	}
+	
+	public void upviewArticleById(int id, String userId) {
+		Article article = articleDao.getArticleById(id);
+		if(!article.getWriter().equals(userId)) {
+			articleDao.updateView(id);
+		}
 	}
 
 	public void modifyArticle(String writer, String title, String body) {
@@ -66,5 +74,8 @@ public class ArticleService {
 		}
 		return articleDao.getArticleslistByKeyword(keyword, boardid1);
 	}
+
+
+
 
 }

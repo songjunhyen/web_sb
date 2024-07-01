@@ -8,12 +8,12 @@ CREATE TABLE `user` (
     updateDate DATETIME NOT NULL,
     userid VARCHAR(30) NOT NULL UNIQUE,
     userpw VARCHAR(60) NOT NULL,
-    nickname VARCHAR(30) NOT NULL,
-    INDEX idx_id (id) 
+    nickname VARCHAR(30) NOT NULL
+   -- ,INDEX idx_id (id) 
 );
 
 CREATE TABLE board (
-    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    Id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(20) NOT NULL COMMENT '게시판이름'
 );
 
@@ -25,13 +25,15 @@ CREATE TABLE article (
     `body` TEXT NOT NULL,
     writer VARCHAR(30) NOT NULL,
     boardId INT UNSIGNED NOT NULL,
-    viewcount INT UNSIGNED NOT NULL DEFAULT 0,
-    FOREIGN KEY (writer) REFERENCES `user`(userid) ON DELETE CASCADE,
-    FOREIGN KEY (boardId) REFERENCES board(id) ON DELETE CASCADE,
-    INDEX idx_id (id),
-    INDEX idx_writer (writer),
-    INDEX idx_id_writer (id, writer)
+    viewcount INT UNSIGNED NOT NULL DEFAULT 0
+    views INT UNSIGNED NOT NULL DEFAULT 0
+   -- ,FOREIGN KEY (writer) REFERENCES `user`(userid) ON DELETE CASCADE,
+   -- FOREIGN KEY (boardId) REFERENCES board(id) ON DELETE CASCADE,
+   -- INDEX idx_id (id),
+   -- INDEX idx_writer (writer),
+   -- INDEX idx_id_writer (id, writer)
 );
+
 
 CREATE TABLE `login_user` (
     num INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -47,7 +49,7 @@ SET regDate = NOW(),
     userpw = 'hashed_password', -- 실제 해시된 비밀번호 값으로 대체
     nickname = '테스터';
 
-INSERT INTO board (NAME) VALUES ('공지사항'), ('자유게시판');
+INSERT INTO board (NAME) VALUES ('공지사항'), ('자유게시판'), ('기타');
 
 INSERT INTO article
 SET regDate = NOW(),
@@ -64,10 +66,18 @@ SET regDate = NOW(),
     writer = 'tester_1',
     boardId = 2;
 
+SELECT id, regdate, title, writer, viewcount
+FROM article
+WHERE 
+    (title LIKE CONCAT('%', 123, '%')) OR 
+    (id IN (SELECT id FROM article WHERE body LIKE CONCAT('%', 123, '%')))
+ORDER BY id DESC;
 
 SELECT * FROM article;
 SELECT * FROM `user`;
 SELECT * FROM `login_user`;
 SELECT * FROM board;
 
-SELECT * FROM article ORDER BY id DESC
+-- 테스트데이터 생성
+INSERT INTO article(regDate, updateDate, writer, boardId, title, `body`)
+SELECT NOW(), NOW(), FLOOR(RAND()*2)+1, FLOOR(RAND()*3)+1, CONCAT('제목_', RAND()), CONCAT('내용_', RAND());

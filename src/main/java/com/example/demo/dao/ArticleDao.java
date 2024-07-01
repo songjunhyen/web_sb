@@ -31,6 +31,13 @@ public interface ArticleDao {
 			""")
 	List<Article> getAllArticles();
 	
+	@Update("""
+			UPDATE article
+		        SET viewcount = viewcount + 1
+		        WHERE id = #{id}
+			""")
+	void updateView(int id);
+	
 	@Insert("INSERT INTO article (regDate, updateDate, title, `body`, writer, boardid, viewcount) "
 	        + "VALUES (#{article.regDate}, #{article.updateDate}, #{article.title}, #{article.body}, #{article.writer}, #{boardid}, #{article.viewcount})")
 	void writeArticle(@Param("article") Article article, @Param("boardid") int boardid);

@@ -44,6 +44,13 @@
   padding: 10px; /* 링크 안의 여백 설정 */
 }
 
+button {
+  border: 2px solid black;
+  text-decoration: none; /* 링크 밑줄 제거 */
+  padding: 10px; /* 링크 안의 여백 설정 */
+}
+
+
 .page > div > a {
   text-decoration: none; /* 링크 밑줄 제거 */
 }
@@ -55,6 +62,6 @@
 			
 		<ul>
 			<li><a href="/usr/article/Main"><span>HOME</span></a></li>
-			<li><a href="/usr/article/showList"><span>LIST</span></a></li>
+			<li><a href="/usr/article/showList?boardid=0"><span>LIST</span></a></li>
 		</ul>
 	</div>
