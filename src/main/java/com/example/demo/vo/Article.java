@@ -17,13 +17,15 @@ public class Article {
     private LocalDateTime regDate; // LocalDateTime을 사용하여 날짜와 시간을 처리
     private LocalDateTime updateDate; // updateDate는 수정 시 자동 업데이트되어야 함
     private int viewcount;
+    private int likePoint;
 
-    public Article(String title, String body, String writer) {    	
+    public Article(int id, String title, String body, String writer) {
+    	this.id = id;
         this.title = title;
         this.body = body;
         this.writer = writer;
-        this.regDate = LocalDateTime.now(); // 현재 시간으로 설정
-        this.updateDate = LocalDateTime.now(); // 현재 시간으로 설정
-        this.viewcount = 0; // 조회수 기본값 설정
+        this.regDate = LocalDateTime.now();
+        this.updateDate = LocalDateTime.now();
+        this.viewcount = 0;
     }
 }

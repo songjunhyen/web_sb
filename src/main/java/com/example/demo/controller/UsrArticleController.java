@@ -54,7 +54,7 @@ public class UsrArticleController {
 			return Util.jsHistoryBack("게시판을 선택해주세요");
 		}
 
-		Article article = new Article(title, body, writer);
+		Article article = new Article(0,title, body, writer);
 		articleService.writeArticle(article, boardid);
 		return Util.jsReplace("작성되었습니다.", "Main");
 	}
@@ -89,7 +89,7 @@ public class UsrArticleController {
 	public String showDetail(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes, Model model,
 	        @RequestParam int id) {
 	    String userId = (String) request.getSession().getAttribute("userId");
-	    checking(request, userId); // 이 부분에서 checking 메소드를 호출하는데, 해당 메소드가 무엇을 하는지에 대한 정보가 없습니다.
+	    checking(request, userId); 
 
 	    boolean isViewed = false;
 	    Cookie[] cookies = request.getCookies();
@@ -104,7 +104,7 @@ public class UsrArticleController {
 
 	    if (!isViewed) {
 	        Cookie cookie = new Cookie("viewedArticle_" + id, "true");
-	        cookie.setMaxAge(10); // 오타 수정: setMaxAge로 수정
+	        cookie.setMaxAge(10); 
 	        response.addCookie(cookie);
 	        articleService.upviewArticleById(id,userId);
 	    }
@@ -112,13 +112,11 @@ public class UsrArticleController {
 	    Article foundArticle = articleService.getArticleById(id);
 	    if (foundArticle == null) {
 	        redirectAttributes.addFlashAttribute("errorMessage", "해당되는 게시글이 존재하지 않습니다");
-	        return "redirect:/usr/article/articlelist"; // 경로 수정: "redirect:"를 추가하여 절대 경로로 변경
+	        return "redirect:/usr/article/articlelist";
 	    }
 	    
-	    // ResultData.from 메소드가 호출되었지만, 반환값을 사용하지 않고 있습니다.
-	    // 이 부분이 의도한 대로 동작하도록 수정이 필요합니다.
-	    //ResultData resultData = ResultData.from("S-a2", "게시글 확인", foundArticle);
 	    model.addAttribute("foundArticle", foundArticle);
+	    
 	    return "usr/article/Detail";
 	}
 	
@@ -161,7 +159,7 @@ public class UsrArticleController {
 
 		if (!foundArticle.getWriter().equals(userId)) {
 			request.setAttribute("errorMessage", "수정할 권한이 없습니다.");
-			return "usr/article/articlelist";
+			return "usr/article/articlelist?boardid=0";
 		}
 		model.addAttribute("foundArticle", foundArticle);
 		return "usr/article/modify";
@@ -179,11 +177,11 @@ public class UsrArticleController {
 
 		// 세션에 저장된 userId와 Article의 작성자(writer)를 비교합니다.
 		if (!userId.equals(foundArticle.getWriter())) {
-			return Util.jsReplace("작성자만 수정할 수 있습니다.","/usr/article/showList");
+			return Util.jsReplace("작성자만 수정할 수 있습니다.","/usr/article/showList?boardid=0");
 		}
 
 		articleService.modifyArticle(userId, title, body);
-		return Util.jsReplace("수정되었습니다.","/usr/article/showList");
+		return Util.jsReplace("수정되었습니다.","/usr/article/showList?boardid=0");
 	}
 
 	@GetMapping("/usr/article/doDelete")
@@ -195,11 +193,11 @@ public class UsrArticleController {
 
 		Article foundArticle = articleService.getArticleById(id);
 		if (!userId.equals(foundArticle.getWriter())) {
-			return Util.jsReplace("작성자만 삭제할 수 있습니다.", "/usr/article/showList");
+			return Util.jsReplace("작성자만 삭제할 수 있습니다.", "/usr/article/showList?boardid=0");
 		}
 		articleService.deleteArticle(foundArticle);
 
-		return Util.jsReplace(String.format("%d번 게시물을 삭제했습니다", id), "showList");
+		return Util.jsReplace(String.format("%d번 게시물을 삭제했습니다", id), "showList?boardid=0");
 	}
 
 	private ResultData<Boolean> checking(HttpServletRequest request, String userId) {
@@ -213,4 +211,5 @@ public class UsrArticleController {
 		}
 		return ResultData.from("S-0", "안전", true);
 	}
+	
 }

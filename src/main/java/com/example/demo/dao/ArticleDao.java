@@ -38,7 +38,7 @@ public interface ArticleDao {
 			""")
 	void updateView(int id);
 	
-	@Insert("INSERT INTO article (regDate, updateDate, title, `body`, writer, boardid, viewcount) "
+	@Insert("INSERT INTO article (regDate, updateDate, title, `body`, writer, boardId, viewcount) "
 	        + "VALUES (#{article.regDate}, #{article.updateDate}, #{article.title}, #{article.body}, #{article.writer}, #{boardid}, #{article.viewcount})")
 	void writeArticle(@Param("article") Article article, @Param("boardid") int boardid);
 
@@ -79,7 +79,7 @@ public interface ArticleDao {
 	@Select("""
 	        SELECT id, regdate, title, writer, viewcount
 			    FROM article
-			    WHERE boardid =  #{boardid}
+			    WHERE boardId =  #{boardid}
 				ORDER BY id DESC
 	        """)
 	List<Article> getArticleslist2(String boardid);
@@ -87,7 +87,7 @@ public interface ArticleDao {
 	@Select("""
 		    SELECT id, regdate, title, writer, viewcount
 		    FROM article
-		    WHERE boardid = #{boardid}
+		    WHERE boardId = #{boardid}
 		    AND (title LIKE CONCAT('%', #{keyword}, '%')) OR (id IN (SELECT id FROM article WHERE body LIKE CONCAT('%', #{keyword}, '%')))
 		    ORDER BY id DESC
 			""")
@@ -99,4 +99,30 @@ public interface ArticleDao {
 		    ORDER BY id DESC
 			""")
 	List<Article> getArticleslistByKeyword2(String keyword);
+
+	
+	// 특정 article에 대한 좋아요 수(count)를 가져오는 메서드
+	@Select("""
+		    SELECT COUNT(*) FROM likepoint
+		    WHERE relid = #{articleId} AND reltypecode = 'article';
+		""")
+    int getLikeCount(@Param("articleId") int articleId);
+
+    // article에 좋아요를 추가하는 메서드
+    @Insert("""
+            INSERT INTO likepoint (userid, reltypecode, relid, point)
+    			VALUES (#{userId}, #{reltypecode}, 0, 1)
+            """)
+    int insertLike(@Param("userId") String userId, @Param("articleId") int articleId,String reltypecode);
+
+    
+    @Update("""
+            UPDATE likepoint
+            SET point = point + 1
+            WHERE userid = #{userId} AND relid = #{articleId} AND reltypecode = #{reltypecode}
+            """)
+	int updateLike(String userId, int articleId, String reltypecode);
+    
+    
+    
 }
