@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.service.ArticleService;
+import com.example.demo.service.ReplyService;
 import com.example.demo.vo.Article;
+import com.example.demo.vo.Reply;
 import com.example.demo.vo.ResultData;
+import com.example.demo.vo.Rq;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,9 +29,13 @@ import util.Util;
 public class UsrArticleController {
 
 	private ArticleService articleService;
+	private ReplyService replyService;
+	private Rq rq;
 
-	public UsrArticleController(ArticleService articleService) {
+	public UsrArticleController(ArticleService articleService, ReplyService replyService, Rq rq) {
 		this.articleService = articleService;
+		this.replyService = replyService;
+		this.rq = rq;
 	}
 
 	@GetMapping("/usr/article/Main")
@@ -114,9 +121,12 @@ public class UsrArticleController {
 	        redirectAttributes.addFlashAttribute("errorMessage", "해당되는 게시글이 존재하지 않습니다");
 	        return "redirect:/usr/article/articlelist";
 	    }
-	    
+	    model.addAttribute("userId",  userId);
 	    model.addAttribute("foundArticle", foundArticle);
 	    
+	    List<Reply> replies = replyService.getReply("article", id);
+	    model.addAttribute("replies", replies);	
+
 	    return "usr/article/Detail";
 	}
 	

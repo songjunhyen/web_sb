@@ -1,18 +1,17 @@
 package com.example.demo.controller;
 
-import java.util.List;
-
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.service.ReplyService;
 import com.example.demo.vo.Reply;
 import com.example.demo.vo.Rq;
 
+import jakarta.servlet.http.HttpServletRequest;
 import util.Util;
 
-
+@Controller
 public class UsrReplyController {
 
 	private ReplyService replyService;
@@ -23,33 +22,29 @@ public class UsrReplyController {
 		this.rq = rq;
 	}
 
-	@GetMapping("/usr/article/Reply/getReply")
+	@PostMapping("/usr/article/Reply/WriteReply")
 	@ResponseBody
-	public String getLikePoint(String relTypeCode, int relId,Model model) {
+	public String writeReply(HttpServletRequest request, String relTypeCode, int relId, String body) {
+		String userId = (String) request.getSession().getAttribute("userId");
+		Reply reply = new Reply(rq.getLoginedMemberId(), relTypeCode, relId, body, userId);
+	    
+	    replyService.writeReply(reply);
+	    return Util.jsReplace(String.format("댓글을 작성했습니다"), String.format("../detail?id=%d", relId));
+	}
+	
+	@PostMapping("/usr/article/Reply/DeleteReply")
+	@ResponseBody
+	public String deleteReply(int replyId,String relTypeCode) {
+		int userId = rq.getLoginedMemberId();
 		
-		List<Reply> replyList = replyService.getReply(rq.getLoginedMemberId(), relTypeCode, relId);
-	    model.addAttribute("replyList", replyList);
-		return "reply/list";
-	}
-
-	@GetMapping("/usr/article/Reply/WriteReply")
-	@ResponseBody
-	public String doWrite(String body, String relTypeCode, int relId) {
-
-		replyService.writeReply(rq.getLoginedMemberId(), relTypeCode, relId, body);
-
-		int id = replyService.getLastInsertId();
-
-		return Util.jsReplace(String.format("%d번 댓글을 작성했습니다", id), String.format("../article/detail?id=%d", relId));
+	    int replywriterid = replyService.getReplyWriterid(replyId);
+	    
+	    if (replywriterid!=userId) {
+	    	return Util.jsReplace(String.format("삭제할 권환이 없습니다."), String.format("../detail?id=%d", replyId));
+	    }
+	    
+	    replyService.deleteReply(userId, relTypeCode,replyId);
+	    return Util.jsReplace(String.format("삭제되었습니다"), String.format("../detail?id=%d", replyId));
 	}
 	
-	@GetMapping("/usr/article/Reply/DeleteReply")
-	@ResponseBody
-	public String DeleteReply(String relTypeCode, int relId, boolean likePointBtn) {
-		replyService.deleteReply(rq.getLoginedMemberId(), relTypeCode, relId);
-		int id = replyService.getLastInsertId();
-		return Util.jsReplace(String.format("%d번 댓글을 삭제했습니다", id), String.format("../article/detail?id=%d", relId));
-	}
-	
-
 }

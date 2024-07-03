@@ -12,16 +12,33 @@ import com.example.demo.vo.Reply;
 @Mapper
 public interface ReplyDao {
 
-    @Select("SELECT * FROM reply WHERE userId = #{loginedMemberId} AND relTypeCode = #{relTypeCode} AND relId = #{relId}")
+    @Select("""
+    		SELECT * FROM reply 
+			WHERE relTypeCode = #{relTypeCode}
+			  AND relId = #{relId}
+    		""")
 	public
-    List<Reply> getReply(int loginedMemberId, String relTypeCode, int relId);
+    List<Reply> getReply(String relTypeCode, int relId);
 
-    @Insert("INSERT INTO reply (regDate, updateDate, userId, relTypeCode, relId, body) VALUES (NOW(), NOW(), #{loginedMemberId}, #{relTypeCode}, #{relId}, #{body})")
-	public void writeReply(int loginedMemberId, String relTypeCode, int relId, String body);
+    @Insert("""
+    		INSERT INTO reply (regDate, updateDate, userId, relTypeCode, relId, body, writer) 
+				VALUES (NOW(), NOW(), #{userId}, #{relTypeCode}, #{relId}, #{body}, #{writer})
+    		""")
+	public void writeReply(Reply reply);
 
-    @Delete("DELETE FROM reply WHERE userId = #{loginedMemberId} AND relTypeCode = #{relTypeCode} AND relId = #{relId}")
+    @Delete("""
+    		DELETE FROM reply 
+			WHERE userId = #{loginedMemberId} 
+			  AND relTypeCode = #{relTypeCode} 
+			  AND relId = #{relId}
+    		""")
 	public void deleteReply(int loginedMemberId, String relTypeCode, int relId);
 
-    @Select("SELECT LAST_INSERT_ID()")
-	public int getLastInsertId();
+    @Select("""
+    		SELECT userId 
+				FROM reply 
+				WHERE id = #{replyId}    		
+    		""")
+	public int getReplyWriterid(int replyId);
+
 }
