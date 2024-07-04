@@ -13,4 +13,14 @@ public class LikePoint {
 	private String relTypeCode;
 	private int relId;
 	private int point;
+	
+	
+    // 생성자 추가
+    public LikePoint(int userId, String relTypeCode, int relId, int point) {
+        this.userId = userId;
+        this.relTypeCode = relTypeCode;
+        this.relId = relId;
+        this.point = point;
+    }
+    
 }

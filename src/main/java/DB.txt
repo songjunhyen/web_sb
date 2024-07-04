@@ -26,7 +26,6 @@ CREATE TABLE article (
     writer VARCHAR(30) NOT NULL,
     boardId INT UNSIGNED NOT NULL,
     viewcount INT UNSIGNED NOT NULL DEFAULT 0
-    views INT UNSIGNED NOT NULL DEFAULT 0
    -- ,FOREIGN KEY (writer) REFERENCES `user`(userid) ON DELETE CASCADE,
    -- FOREIGN KEY (boardId) REFERENCES board(id) ON DELETE CASCADE,
    -- INDEX idx_id (id),
@@ -42,42 +41,48 @@ CREATE TABLE `login_user` (
     login_code VARCHAR(255) NOT NULL UNIQUE
 );
 
-INSERT INTO `user`
-SET regDate = NOW(),
-    updateDate = NOW(),
-    userid = 'tester_1',
-    userpw = 'hashed_password', -- 실제 해시된 비밀번호 값으로 대체
-    nickname = '테스터';
+CREATE TABLE likePoint(
+    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT
+    , userId INT UNSIGNED NOT NULL
+    , relTypeCode VARCHAR(20) NOT NULL COMMENT '관련 데이터 타입 코드'
+    , relId INT UNSIGNED NOT NULL COMMENT '관련 데이터 번호'
+    , `point` INT NOT NULL DEFAULT 1
+);
+
+CREATE TABLE reply(
+    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT
+    , regDate DATETIME NOT NULL
+    , updateDate DATETIME NOT NULL
+    , userId INT UNSIGNED NOT NULL
+    , relTypeCode VARCHAR(20) NOT NULL
+    , relId INT UNSIGNED NOT NULL
+    , `body` TEXT NOT NULL
+    , writer VARCHAR(20) NOT NULL
+);
 
 INSERT INTO board (NAME) VALUES ('공지사항'), ('자유게시판'), ('기타');
 
-INSERT INTO article
+INSERT INTO `user`
 SET regDate = NOW(),
     updateDate = NOW(),
-    title = CONCAT('제목_', RAND()),
-    `body` = CONCAT('내용_', RAND()),
-    writer = 'tester_1',
-    boardId = 1;
-INSERT INTO article
-SET regDate = NOW(),
-    updateDate = NOW(),
-    title = CONCAT('제목_', RAND()),
-    `body` = CONCAT('내용_', RAND()),
-    writer = 'tester_1',
-    boardId = 2;
+    userid = '12',
+    userpw = '12', -- 실제 해시된 비밀번호 값으로 대체
+    nickname = '테스터';
 
-SELECT id, regdate, title, writer, viewcount
-FROM article
-WHERE 
-    (title LIKE CONCAT('%', 123, '%')) OR 
-    (id IN (SELECT id FROM article WHERE body LIKE CONCAT('%', 123, '%')))
-ORDER BY id DESC;
+-- 테스트데이터 생성
+INSERT INTO article(regDate, updateDate, writer, boardId, title, `body`)
+SELECT NOW(), NOW(), FLOOR(RAND()*2)+1, FLOOR(RAND()*3)+1, CONCAT('제목_', RAND()), CONCAT('내용_', RAND());
+
 
 SELECT * FROM article;
 SELECT * FROM `user`;
 SELECT * FROM `login_user`;
 SELECT * FROM board;
+SELECT * FROM likepoint;
+SELECT * FROM reply;
 
--- 테스트데이터 생성
-INSERT INTO article(regDate, updateDate, writer, boardId, title, `body`)
-SELECT NOW(), NOW(), FLOOR(RAND()*2)+1, FLOOR(RAND()*3)+1, CONCAT('제목_', RAND()), CONCAT('내용_', RAND());
+-- 지금 로그인코드로 확인하는거  spring security인가로 다 가능하데...
+-- 쇼핑몰사이트
+-- 로그인, 연동로그인
+-- 추천기능(상품측에 ~~회원이 방문했다고 기록. 그 기록으로 상품끼리 연관하여 추천?)
+--

@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.example.demo.vo.Reply;
 
@@ -28,17 +29,31 @@ public interface ReplyDao {
 
     @Delete("""
     		DELETE FROM reply 
-			WHERE userId = #{loginedMemberId} 
+			WHERE id = #{Id}
+			  AND userId = #{loginedMemberId} 
 			  AND relTypeCode = #{relTypeCode} 
 			  AND relId = #{relId}
     		""")
-	public void deleteReply(int loginedMemberId, String relTypeCode, int relId);
+	public void deleteReply(int Id,int loginedMemberId, String relTypeCode, int relId);
 
     @Select("""
     		SELECT userId 
 				FROM reply 
-				WHERE id = #{replyId}    		
+				WHERE id = #{Id}
+					AND relId = #{relId}
+    				AND userId = #{userId}
     		""")
-	public int getReplyWriterid(int replyId);
+	public int getReplyWriterid(int Id, int userId,int relId);
+
+    @Update("""
+	        UPDATE reply
+	        SET updateDate = NOW(),
+	            body = #{body}
+	        WHERE relTypeCode = #{relTypeCode}
+	          AND relId = #{relId}
+	          AND userId = #{userId}
+	          AND writer = #{writer}
+    		""")
+	public void modifyReply(Reply reply);
 
 }

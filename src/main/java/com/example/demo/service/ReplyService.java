@@ -19,15 +19,19 @@ public class ReplyService {
         return replyDao.getReply(relTypeCode, relId);
     }
 
-    public void deleteReply(int loginedMemberId, String relTypeCode, int relId) {
-        replyDao.deleteReply(loginedMemberId, relTypeCode, relId);
+    public void deleteReply(int Id, int loginedMemberId, String relTypeCode, int relId) {
+        replyDao.deleteReply(Id, loginedMemberId, relTypeCode, relId);
     }
 
     public void writeReply(Reply reply) {
         replyDao.writeReply(reply);
     }
 
-	public int getReplyWriterid(int replyId) {
-		return replyDao.getReplyWriterid(replyId);
+	public int getReplyWriterid(int Id, int userId, int relId) {
+		return replyDao.getReplyWriterid(Id, userId, relId);
+	}
+
+	public void modifyReply(Reply reply) {
+        replyDao.modifyReply(reply);
 	}
 }

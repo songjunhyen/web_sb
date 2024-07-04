@@ -24,27 +24,42 @@ public class UsrReplyController {
 
 	@PostMapping("/usr/article/Reply/WriteReply")
 	@ResponseBody
-	public String writeReply(HttpServletRequest request, String relTypeCode, int relId, String body) {
-		String userId = (String) request.getSession().getAttribute("userId");
-		Reply reply = new Reply(rq.getLoginedMemberId(), relTypeCode, relId, body, userId);
+	public String writeReply( String relTypeCode, int relId, String body) {
+		String loginId = rq.getloginId();
+
+	    Reply reply = new Reply(rq.getLoginedMemberId(), relTypeCode, relId, body, loginId);
 	    
 	    replyService.writeReply(reply);
 	    return Util.jsReplace(String.format("댓글을 작성했습니다"), String.format("../detail?id=%d", relId));
 	}
 	
-	@PostMapping("/usr/article/Reply/DeleteReply")
+	@PostMapping("/usr/article/Reply/ModifyReply")
 	@ResponseBody
-	public String deleteReply(int replyId,String relTypeCode) {
+	public String modifyReply(HttpServletRequest request,String relTypeCode,int Id, int relId, String body) {
 		int userId = rq.getLoginedMemberId();
-		
-	    int replywriterid = replyService.getReplyWriterid(replyId);
+		String loginId = rq.getloginId();
+	    int replywriterid = replyService.getReplyWriterid(Id,userId,relId);
 	    
 	    if (replywriterid!=userId) {
-	    	return Util.jsReplace(String.format("삭제할 권환이 없습니다."), String.format("../detail?id=%d", replyId));
+	    	return Util.jsReplace(String.format("수정할 권환이 없습니다."), String.format("../detail?id=%d", relId));
+	    }
+	    Reply reply= new Reply(userId, relTypeCode, relId, body, loginId);
+	    replyService.modifyReply(reply);
+	    return Util.jsReplace(String.format("수정되었습니다"), String.format("../detail?id=%d", relId));
+	}	
+	
+	@PostMapping("/usr/article/Reply/DeleteReply")
+	@ResponseBody
+	public String deleteReply(int Id, int relId,String relTypeCode) {
+		int userId = rq.getLoginedMemberId();
+		
+	    int replywriterid = replyService.getReplyWriterid(Id, userId,relId);
+	    
+	    if (replywriterid!=userId) {
+	    	return Util.jsReplace(String.format("삭제할 권환이 없습니다."), String.format("../detail?id=%d", relId));
 	    }
 	    
-	    replyService.deleteReply(userId, relTypeCode,replyId);
-	    return Util.jsReplace(String.format("삭제되었습니다"), String.format("../detail?id=%d", replyId));
-	}
-	
+	    replyService.deleteReply(Id, userId, relTypeCode,relId);
+	    return Util.jsReplace(String.format("삭제되었습니다"), String.format("../detail?id=%d", relId));
+	}	
 }

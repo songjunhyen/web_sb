@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.service.LikePointService;
-import com.example.demo.vo.ResultData;
+import com.example.demo.vo.LikePoint;
 import com.example.demo.vo.Rq;
 
 @Controller
@@ -21,20 +21,24 @@ public class UsrLikePointController {
 
 	@GetMapping("/usr/article/likePoint/getLikePoint")
 	@ResponseBody
-	public ResultData<Integer> getLikePoint(String relTypeCode, int relId) {
-		return likePointService.getLikePoint(rq.getLoginedMemberId(), relTypeCode, relId);
+	public int getLikePoint(String relTypeCode, int relId) {
+		LikePoint haveLikepoint = likePointService.haveLikePoint(relTypeCode, relId);
+		if (haveLikepoint != null) {	
+			return likePointService.getLikePoint(relTypeCode, relId);
+		}
+		return 0;
 	}
 
 	@GetMapping("/usr/article/likePoint/doLikePoint")
 	@ResponseBody
-	public String doLikePoint(String relTypeCode, int relId, boolean likePointBtn) {
-
-		if (likePointBtn) {
-			likePointService.deleteLikePoint(rq.getLoginedMemberId(), relTypeCode, relId);
-			return "좋아요 취소";
+	public int doLikePoint(String relTypeCode, int relId	) {
+		int loginMemberId = rq.getLoginedMemberId();
+		boolean havelike = likePointService.haveLike(loginMemberId, relTypeCode, relId);
+		if (!havelike) {
+			likePointService.insertOrUpdateLikePoint(loginMemberId, relTypeCode, relId);
+			return likePointService.getLikePoint(relTypeCode, relId);
+		} else {
+			return likePointService.getLikePoint(relTypeCode, relId);
 		}
-
-		likePointService.insertLikePoint(rq.getLoginedMemberId(), relTypeCode, relId);
-		return "좋아요 성공";
 	}
 }

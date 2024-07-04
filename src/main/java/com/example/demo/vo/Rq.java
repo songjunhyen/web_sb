@@ -18,6 +18,7 @@ import lombok.Getter;
 public class Rq {
 	@Getter
 	private int loginedMemberId;
+	private String loginId;
 	private HttpServletResponse resp;
 	private HttpSession session;
 
@@ -26,13 +27,19 @@ public class Rq {
 		this.resp = resp;
 		this.session = req.getSession();
 		int loginedMemberId = 0;
+		String loginId = "";
 
 		if (this.session.getAttribute("loginedMemberId") != null) {
 			loginedMemberId = (int) this.session.getAttribute("loginedMemberId");
 			req.setAttribute("rq", this);
 		}
+		if (this.session.getAttribute("loginId") != null) {
+			loginId = (String) this.session.getAttribute("loginId");
+			req.setAttribute("rq", this);
+		}
 
 		this.loginedMemberId = loginedMemberId;
+		this.loginId= loginId;
 	}
 
 	public void jsPrintReplace(String msg, String uri) {
@@ -46,14 +53,20 @@ public class Rq {
 	}
 
 	public void login(User user) {
+		this.session.setAttribute("loginId", user.getUserid());
 		this.session.setAttribute("loginedMemberId", user.getId());
 	}
 
 	public void logout() {
+		this.session.removeAttribute("loginId");
 		this.session.removeAttribute("loginedMemberId");
 	}
 	
 	public void init() {
 		//아무 기능 없어도 됨 의존성 주입을 의해 호출하여 인스턴스가 생성하기위한 메서드
+	}
+
+	public String getloginId() {		
+		return (String) session.getAttribute("loginId");
 	}
 }

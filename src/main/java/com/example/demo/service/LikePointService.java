@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.LikePointDao;
 import com.example.demo.vo.LikePoint;
-import com.example.demo.vo.ResultData;
 
 @Service
 public class LikePointService {
@@ -15,24 +14,29 @@ public class LikePointService {
 		this.LikePointDao = LikePointDao;
 	}
 
-	public ResultData<Integer> getLikePoint(int loginedMemberId, String relTypeCode, int relId) {
-
-		LikePoint likePoint = this.LikePointDao.getLikePoint(loginedMemberId, relTypeCode, relId);
-
-		int totalCnt = this.LikePointDao.getTotalCnt(relTypeCode, relId);
-
-		if (likePoint == null) {
-			return ResultData.from("F-1", "좋아요 기록 없음", totalCnt);
-		}
-
-		return ResultData.from("S-1", "좋아요 기록 있음", totalCnt);
+	public int getLikePoint(String relTypeCode, int relId) {
+		return LikePointDao.getTotalCnt(relTypeCode, relId);
 	}
 
-	public void insertLikePoint(int loginedMemberId, String relTypeCode, int relId) {
-		this.LikePointDao.insertLikePoint(loginedMemberId, relTypeCode, relId);
-	}
-
+	public void insertOrUpdateLikePoint(int userId, String relTypeCode, int relId) {
+		boolean have = haveLike(userId, relTypeCode, relId);
+        if (!have) {
+            LikePointDao.insertLikePoint(userId, relTypeCode, relId);
+        } else {
+            LikePointDao.updateLikePoint(userId, relTypeCode, relId);
+        }
+    }
+	
 	public void deleteLikePoint(int loginedMemberId, String relTypeCode, int relId) {
 		this.LikePointDao.deleteLikePoint(loginedMemberId, relTypeCode, relId);
+	}
+
+	public LikePoint haveLikePoint(String relTypeCode, int relId) {
+		return LikePointDao.getLikePoint(relTypeCode, relId);
+	}
+
+	public boolean haveLike(int loginMemberId, String relTypeCode, int relId) {
+		  int count = LikePointDao.haveLike(loginMemberId, relTypeCode, relId);
+		return count > 0;
 	}
 }

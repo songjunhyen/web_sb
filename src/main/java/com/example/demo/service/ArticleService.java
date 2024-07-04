@@ -77,7 +77,6 @@ public class ArticleService {
 
 
     public int getLikeCount(int articleId) {
-        // 해당 articleId의 좋아요 수를 조회하는 로직 구현
         return articleDao.getLikeCount(articleId);
     }
 
@@ -87,7 +86,6 @@ public class ArticleService {
     }
 
 	public int updateLike(String userId, int articleId, String reltypecode) {
-		// TODO Auto-generated method stub
 		return articleDao.updateLike(userId, articleId, reltypecode);
 	}
 
