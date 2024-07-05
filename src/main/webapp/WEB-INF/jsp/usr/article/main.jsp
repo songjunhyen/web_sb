@@ -35,13 +35,7 @@
 	    <br>
 	    <input type="submit" class="btn btn-sm btn-primary" value="검색하기">
 	</form>
-	
-    <br>
-    <button onclick="location.href='/usr/user/updated'" class="btn btn-sm btn-link">회원정보 수정</button>
-    <br>
-    <button onclick="location.href='/usr/user/delete'" class="btn btn-sm btn-link">회원정보 삭제</button>
-    <br>
-    
+	    
     <form action="/usr/user/Logout" method="post">
         <button type="submit" class="btn btn-sm btn-danger">로그아웃</button>
     </form>

@@ -4,37 +4,62 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>글 작성</title>
 <%@ include file="../../common/head2.jsp"%>
+<%@ include file="../../common/toastUiEditorLib.jsp"%>
+
 </head>
-<body>
-    <form action="/usr/article/doWrite" method="post">
-        <label for="title">Title:</label><br>
-        <input type="text" id="title" name="title" placeholder="제목을 입력하세요"><br>
+<section class="mt-8 text-lg">
+	<div class="container mx-auto px-3">
+		<form action="/usr/article/doWrite" method="post"
+			onsubmit="return submitForm(this)">
+			<input type="hidden" name="body" />
+			<div class="w-9/12 mx-auto">
+				<label for="board">게시판 선택:</label> <br>
+				 <select id="board"	name="board" onchange="setBoardId()">
+					<option value="">게시판을 선택하세요</option>
+					<option value="1">공지사항</option>
+					<option value="2">자유게시판</option>
+					<option value="3">기타</option>
+				</select> <br> <br> <input type="hidden" id="boardId"
+					name="boardid" value="">
+				<table class="table table-lg">
 
-        <label for="body">Body:</label><br>
-        <textarea id="body" name="body" placeholder="내용을 입력하세요"></textarea><br>
+					<tr>
+						<th>게시판</th>
+					</tr>
 
-        <label for="board">게시판 선택:</label><br>
-        <select id="board" name="board" onchange="setBoardId()">
-            <option value="">게시판을 선택하세요</option>
-            <option value="1">공지사항</option>
-            <option value="2">자유게시판</option>
-            <option value="3">기타</option>
-        </select><br><br>
+					<tr>
+						<th>제목</th>
+						<td><input class="input input-bordered w-full" type="text"
+							name="title" /></td>
+					</tr>
+					<tr>
+						<th>내용</th>
+						<td><div class="toast-ui-editor"></div></td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<div class="btns flex justify-center">
+								<button class="btn btn-active btn-wide">작성</button>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
 
-        <input type="hidden" id="boardId" name="boardid" value="">
 
-        <button type="submit">Submit</button>
-    </form>
-        <button onclick="history.back();">뒤로가기</button>
-
-    <script>
-        function setBoardId() {
-            var boardSelect = document.getElementById("board");
-            var boardId = boardSelect.options[boardSelect.selectedIndex].value;
-            document.getElementById("boardId").value = boardId;
-        }
-    </script>
+			<button onclick="history.back();">뒤로가기</button>
+		</form>
+	</div>
+</section>
+<script>
+	function setBoardId() {
+		var boardSelect = document.getElementById("board");
+		var boardId = boardSelect.options[boardSelect.selectedIndex].value;
+		document.getElementById("boardId").value = boardId;
+	}
+</script>
 </body>
 </html>
+

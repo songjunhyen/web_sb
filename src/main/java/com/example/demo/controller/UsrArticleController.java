@@ -95,7 +95,7 @@ public class UsrArticleController {
 	@GetMapping("/usr/article/detail")
 	public String showDetail(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes, Model model,
 	        @RequestParam int id) {
-	    String userId = (String) request.getSession().getAttribute("userId");
+	    String userId = rq.getloginId();
 	    checking(request, userId); 
 
 	    boolean isViewed = false;
@@ -133,7 +133,7 @@ public class UsrArticleController {
 	@GetMapping("/usr/article/Search")
 	public String searchList(HttpServletRequest request, Model model, @RequestParam String keyword, 
             @RequestParam(defaultValue = "0") String boardid, @RequestParam(defaultValue = "1") int page) {
-		String userId = (String) request.getSession().getAttribute("userId");
+		String userId = rq.getloginId();
 		checking(request, userId);
 
 		if (Util.isEmpty(keyword)) {
@@ -162,7 +162,7 @@ public class UsrArticleController {
 	@GetMapping("/usr/article/Modify")
 	public String Modify(HttpServletRequest request, RedirectAttributes redirectAttributes, @RequestParam int id,
 			Model model) {
-		String userId = (String) request.getSession().getAttribute("userId");
+		String userId = rq.getloginId();
 		checking(request, userId);
 
 		Article foundArticle = articleService.getArticleById(id);
@@ -179,7 +179,7 @@ public class UsrArticleController {
 	@ResponseBody
 	public String doModify(HttpServletRequest request, @RequestParam int id,
 			@RequestParam String title, @RequestParam String body) {
-		String userId = (String) request.getSession().getAttribute("userId");
+		String userId = rq.getloginId();
 
 		checking(request, userId);
 
@@ -197,7 +197,7 @@ public class UsrArticleController {
 	@GetMapping("/usr/article/doDelete")
 	@ResponseBody
 	public String doDelete(HttpServletRequest request, int id) {
-		String userId = (String) request.getSession().getAttribute("userId");
+		String userId = rq.getloginId();
 
 		checking(request, userId);
 

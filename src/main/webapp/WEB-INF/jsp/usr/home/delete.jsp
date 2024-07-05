@@ -4,12 +4,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>회원정보 제거</title>
     <%@ include file="../../common/head2.jsp"%>
 
 </head>
 <body>
-	<form action="/usr/user/delete" method="post">
+	<form action="/usr/user/Delete" method="post">
 		<label for="userid_delete">User ID:</label><br> 
 		<input type="text" id="userid_delete" name="userid" placeholder="사용자 아이디"><br>
 		<label for="userpw_delete">Password:</label><br>

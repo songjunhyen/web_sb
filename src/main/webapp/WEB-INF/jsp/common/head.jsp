@@ -5,7 +5,8 @@
 <head>
 <meta charset="UTF-8">
 <title>${pageTitle }</title>
-
+<!-- 파비콘추가 -->
+<link rel="shortcut icon" href="/resource/images/favicon.ico" />
 <!-- 데이지 UI -->
 <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.8/dist/full.min.css" rel="stylesheet" type="text/css" />
 <!-- 테일윈드 -->

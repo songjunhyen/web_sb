@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import com.example.demo.dao.UserDao;
 import com.example.demo.vo.User;
 
+import util.Util;
+
 @Service
 public class UserService {
 	private final UserDao userDao;
@@ -39,7 +41,12 @@ public class UserService {
 	}
 
 	public User getUserById(String userid) {
-		return userDao.getUserById(userid);
+		User user = userDao.getUserById(userid);
+		
+		if(user == null) {
+			return null;
+		}
+		return user;
 	}
 
 }

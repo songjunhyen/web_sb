@@ -15,7 +15,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <!-- 공통 css -->
 <link rel="stylesheet" href="/resource/common.css" />
-    <%@ include file="../../common/head2.jsp"%>
+    <%@ include file="../../common/head.jsp"%>
 
 </head>
 <body>
