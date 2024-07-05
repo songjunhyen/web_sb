@@ -4,8 +4,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>    
 <%@ page import="com.example.demo.vo.User"%>    
     
-    
-    
 <!DOCTYPE html>
 <html>
 <head>

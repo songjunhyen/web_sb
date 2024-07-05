@@ -33,8 +33,13 @@ public class WebConfig implements WebMvcConfigurer {
 	            .addPathPatterns("/usr/article/modify")
 	            .addPathPatterns("/usr/article/doModify")
 	            .addPathPatterns("/usr/article/doDelete")
-	            .addPathPatterns("/usr/article/Modify"); // 추가: 수정 페이지 접근 시 로그인 필요
-	    
+	            .addPathPatterns("/usr/article/Modify")
+	            .addPathPatterns("/usr/user/Logout")
+	            .addPathPatterns("/usr/article/Reply/WriteReply")
+	            .addPathPatterns("/usr/article/Reply/ModifyReply")
+	            .addPathPatterns("/usr/article/Reply/DeleteReply")
+	            .addPathPatterns("/usr/article/likePoint/doLikePoint"); // 추가: 접근 시 로그인 필요
+	    	
 	    registry.addInterceptor(needLogoutInterceptor)
 	            .addPathPatterns("/usr/member/join")
 	            .addPathPatterns("/usr/member/doJoin")

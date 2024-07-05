@@ -17,9 +17,11 @@
 <link rel="stylesheet" href="/resource/common.css" />
     <%@ include file="../../common/head.jsp"%>
 
+
+
 </head>
 <body>
-	<a href="/">홈으로</a>
+	<a href="/">Home</a>
 	<br>
 	<form action="/usr/user/Login" method="post">
 		<label for="userid">아이디:</label><br> <input type="text"

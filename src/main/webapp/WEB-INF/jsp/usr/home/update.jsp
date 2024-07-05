@@ -7,6 +7,14 @@
 <title>회원정보 수정</title>
     <%@ include file="../../common/head2.jsp"%>
 
+<!-- 
+ <script>
+ 에 유저정보를 ajax로 요청해서 받고 비교해서 표시하도록 아이디가 일치하지않습니다 이런식으로
+ 비었는지도 체크
+ </script>    
+-->
+
+
 <style type="text/css">
 .update{
   text-align: center;
