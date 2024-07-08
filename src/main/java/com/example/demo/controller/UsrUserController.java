@@ -83,7 +83,6 @@ public class UsrUserController {
 
 		// 세션에 userId, loginCode 저장
 		HttpSession session = request.getSession();
-		session.setAttribute("userId", userid);
 		session.setAttribute("loginCode", loginCode);
 
 		// 로그인 성공 메시지와 사용자 정보 반환
@@ -94,10 +93,8 @@ public class UsrUserController {
 	@ResponseBody
 	public String Logout(HttpServletRequest request) {
 		rq.logout();
-		HttpSession session = request.getSession();
 		String userid = rq.getloginId();
 		User foundUser = userService.getUserById(userid);
-		session.invalidate();
 		rq.logout();
 		userService.Logout(foundUser);
 		return Util.jsReplace("로그아웃 되었습니다.", "/usr/home/main");

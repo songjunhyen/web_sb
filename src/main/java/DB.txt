@@ -81,6 +81,7 @@ SELECT * FROM board;
 SELECT * FROM likepoint;
 SELECT * FROM reply;
 
+
 -- 지금 로그인코드로 확인하는거  spring security인가로 다 가능하데...
 -- 쇼핑몰사이트
 -- 로그인, 연동로그인

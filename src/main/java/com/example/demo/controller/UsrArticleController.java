@@ -68,7 +68,7 @@ public class UsrArticleController {
 
 	@GetMapping("/usr/article/showList")
 	public String showList(HttpServletRequest request, Model model, @RequestParam String boardid, @RequestParam(defaultValue = "1") int page) {
-	    String userId = (String) request.getSession().getAttribute("userId");
+	    String userId = rq.getloginId();
 	    checking(request, userId);
 
 		List<Article> articles = articleService.getArticleslist(boardid);

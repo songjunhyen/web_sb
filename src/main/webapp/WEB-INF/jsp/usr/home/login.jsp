@@ -5,33 +5,69 @@
 <head>
 <meta charset="UTF-8">
 <title>로그인</title>
-<!-- 데이지 UI -->
-<link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.8/dist/full.min.css" rel="stylesheet" type="text/css" />
-<!-- 테일윈드 -->
-<script src="https://cdn.tailwindcss.com"></script>
-<!-- 폰트어썸 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"></script>
-<!-- 제이쿼리 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<!-- 공통 css -->
-<link rel="stylesheet" href="/resource/common.css" />
+
     <%@ include file="../../common/head.jsp"%>
 
+    <style>
+        .error-message {
+            color: red;
+            display: none;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            // 입력 필드에서 포커스를 잃었을 때 유효성 검사
+            $("#userid").blur(function() {
+                checkEmptyInput("userid", "useridError", "아이디를 입력해주세요.");
+            });
 
+            $("#userpw").blur(function() {
+                checkEmptyInput("userpw", "userpwError", "비밀번호를 입력해주세요.");
+            });
 
+            // 입력 필드 오류 메시지 표시 함수
+            function showError(errorId, errorMessage) {
+                $("#" + errorId).html(errorMessage);
+                $("#" + errorId).show();
+            }
+
+            // 입력 필드 오류 메시지 숨기는 함수
+            function hideError(errorId) {
+                $("#" + errorId).html("");
+                $("#" + errorId).hide();
+            }
+
+            // 아이디, 비밀번호가 비어 있는지 확인하는 함수
+            function checkEmptyInput(fieldId, errorMessageId, errorMessage) {
+                var fieldValue = $("#" + fieldId).val().trim();
+                var errorMessageElement = $("#" + errorMessageId);
+
+                if (fieldValue === "") {
+                    errorMessageElement.html(errorMessage);
+                    errorMessageElement.show();
+                    return false; // 입력값이 비어있음
+                } else {
+                    errorMessageElement.html("");
+                    errorMessageElement.hide();
+                    return true; // 입력값이 있음
+                }
+            }           
+        });
+    </script>
 </head>
 <body>
-	<a href="/">Home</a>
-	<br>
-	<form action="/usr/user/Login" method="post">
-		<label for="userid">아이디:</label><br> <input type="text"
-			id="userid" name="userid" placeholder="아이디를 입력해주세요"><br>
-		<br> <label for="userpw">비밀번호:</label><br> <input
-			type="password" id="userpw" name="userpw" placeholder="비밀번호를 입력해주세요"><br>
-		<br>
+<a href="/">Home</a>
+<br>
+<form id="loginForm" action="/usr/user/Login" method="post">
+    <label for="userid">아이디:</label><br>
+    <input type="text" id="userid" name="userid" placeholder="아이디를 입력해주세요"><br>
+    <div id="useridError" class="error-message"></div><br>
 
-		<input type="submit" value="로그인">
-	</form>
+    <label for="userpw">비밀번호:</label><br>
+    <input type="password" id="userpw" name="userpw" placeholder="비밀번호를 입력해주세요"><br>
+    <div id="userpwError" class="error-message"></div><br>
+
+    <input type="submit" value="로그인">
+</form>
 </body>
 </html>
-
